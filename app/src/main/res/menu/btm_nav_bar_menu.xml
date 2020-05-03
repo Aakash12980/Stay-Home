@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/open_shop"
+        android:icon="@drawable/active"
+        android:title="Opened"/>
+
+    <item android:id="@+id/view_all"
+        android:icon="@drawable/all"
+        android:title="view All"/>
+
+</menu>

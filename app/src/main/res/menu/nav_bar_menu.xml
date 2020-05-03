@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/nav_bar_home_frag"
+            android:icon="@drawable/home"
+            android:title="Home"/>
+        <item android:id="@+id/nav_bar_stats_frag"
+            android:icon="@drawable/stats"
+            android:title="Covid-19 Updates"/>
+        <item android:id="@+id/nav_bar_shop_frag"
+            android:icon="@drawable/my_shop"
+            android:title="My shop"/>
+        <item android:id="@+id/nav_bar_setting_frag"
+            android:icon="@drawable/settings"
+            android:title="Setting"/>
+        <item android:id="@+id/nav_bar_login_frag"
+            android:icon="@drawable/login"
+            android:title="Login"/>
+        <item android:id="@+id/nav_bar_logout_frag"
+            android:icon="@drawable/logout"
+            android:title="Logout"/>
+    </group>
+
+
+</menu>
