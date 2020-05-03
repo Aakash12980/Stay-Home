@@ -36,8 +36,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -66,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String TAG = "MAIN ACTIVITY";
     private FirebaseUser user;
+    private DocumentReference documentReference;
 
     private TextView nameView;
     private TextView locView;
@@ -80,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nameView = headerView.findViewById(R.id.shop_prof_name);
         locView = headerView.findViewById(R.id.shop_prof_loc);
         imgView = headerView.findViewById(R.id.shop_prof_img);
-
+        
         if (savedInstanceState == null){
             if (getIntent().hasExtra("fragment")){
                 String load_frag = getIntent().getStringExtra("fragment");
@@ -149,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             unHideItem();
             final StorageReference storageReference = firebaseStorage.getReference("ProfilePic")
                     .child(user.getUid()).child("profile.jpg");
-            final DocumentReference documentReference = FirebaseFirestore.getInstance().collection("ShopInfo").document(user.getUid());
+            documentReference = FirebaseFirestore.getInstance().collection("ShopInfo").document(user.getUid());
 
             if (isNetworkAvailable()){
                 documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {

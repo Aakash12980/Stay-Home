@@ -126,6 +126,6 @@ public class OpenAllShopListAdapter extends RecyclerView.Adapter<OpenAllShopList
     }
 
     public double meterToMile(double dist){
-        return dist * 0.000621371;
+        return dist * 0.621371;
     }
 }

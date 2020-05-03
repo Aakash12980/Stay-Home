@@ -15,10 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.stayhome.data.ShopData;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -33,6 +31,7 @@ public class CreateShop extends AppCompatActivity {
     private String genre;
     private String loc;
     private String contact;
+    private String lat, lng;
     private String uid;
     TextInputLayout shopName;
     TextInputLayout shopGenre;
@@ -40,7 +39,6 @@ public class CreateShop extends AppCompatActivity {
     TextInputLayout shopContact;
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private ShopData shopData = new ShopData();
-    private String lat, lng;
     private List<String> latlng = new ArrayList<>();
     private ProgressBar progressBar;
     public static final String TAG = "CREATE SHOP";
@@ -62,7 +60,10 @@ public class CreateShop extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), MapAct.class);
                 intent.putExtra("name", name);
                 intent.putExtra("genre", genre);
-                intent.putExtra("loc", loc);
+                intent.putExtra("contact", contact);
+                intent.putExtra("lat", lat);
+                intent.putExtra("lng", lng);
+                intent.putExtra("address", loc);
                 startActivity(intent);
             }
         });
@@ -76,10 +77,26 @@ public class CreateShop extends AppCompatActivity {
             }
         });
 
-
-
-
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (name != null){
+            shopName.getEditText().setText(name);
+        }
+        if (genre != null){
+            shopGenre.getEditText().setText(genre);
+        }
+        if (loc != null){
+            shopLoc.getEditText().setText(loc);
+        }
+        if (contact != null){
+            shopContact.getEditText().setText(contact);
+        }
+        clearExtras();
+    }
+
     private void createShop(){
         shopData.setShopName(name);
         shopData.setContact(contact);
@@ -87,10 +104,10 @@ public class CreateShop extends AppCompatActivity {
         shopData.setLatLng(latlng);
         shopData.setShopLoc(loc);
         shopData.setUid(uid);
-        progressBar = new ProgressBar(getApplicationContext());
-        progressBar.setVisibility(View.VISIBLE);
         final DocumentReference documentReference = firestore.collection("ShopData").document(uid);
         if (isNetworkAvailable()){
+            progressBar = new ProgressBar(getApplicationContext());
+            progressBar.setVisibility(View.VISIBLE);
             documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -168,10 +185,32 @@ public class CreateShop extends AppCompatActivity {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+    private void getExtras(){
+        name = getIntent().getStringExtra("name");
+        genre = getIntent().getStringExtra("genre");
+        contact = getIntent().getStringExtra("contact");
+        loc = getIntent().getStringExtra("address");
+        lat = getIntent().getStringExtra("lat");
+        lng = getIntent().getStringExtra("lng");
+        latlng.add(lat);
+        latlng.add(lng);
+
+    }
+    private void clearExtras(){
+        getIntent().removeExtra("name");
+        getIntent().removeExtra("genre");
+        getIntent().removeExtra("contact");
+        getIntent().removeExtra("address");
+        getIntent().removeExtra("lat");
+        getIntent().removeExtra("lng");
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
+        if (getIntent().hasExtra("name")){
+            getExtras();
+        }
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 }

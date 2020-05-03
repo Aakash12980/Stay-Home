@@ -15,8 +15,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.stayhome.data.ShopData;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,12 +29,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCallback {
     
@@ -42,16 +47,17 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     private static final String FINE_LOCATION = android.Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final float DEFAULT_ZOOM = 15f;
+    private ShopData shop;
 
     private GoogleMap gMap;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Marker startMarker;
     private double currentLat, currentLng;
-    private DatabaseReference databaseReference;
-    private ValueEventListener valueEventListener;
+
     private float distance;
     private Location deviceLoc = new Location("");
     private ImageView gpsView;
+    private Query query;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +65,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         setContentView(R.layout.activity_home_map);
 
         gpsView = findViewById(R.id.home_gps);
-
-        getLocationPermission();
-        initMap();
     }
 
     @Override
@@ -82,41 +85,40 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 getCurrentLocation();
             }
         });
+        query = FirebaseFirestore.getInstance().collection("ShopData").whereEqualTo("active", true);
         if (isNetworkAvailable()){
-            databaseReference = FirebaseDatabase.getInstance().getReference("ShopInfo");
-            valueEventListener = databaseReference.orderByChild("active").equalTo(true).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()){
-                        for (DataSnapshot data: dataSnapshot.getChildren()
-                        ) {
-                            final ShopInfo shopInfo = data.getValue(ShopInfo.class);
-                            Log.d(TAG, "onDataChange: Value of Shopinfo: " + shopInfo);
-                            try {
-                                Location loc = new Location("");
-                                loc.setLatitude(Double.valueOf(shopInfo.getLatLng().get(0)));
-                                loc.setLongitude(Double.valueOf(shopInfo.getLatLng().get(1)));
-                                distance = deviceLoc.distanceTo(loc);
-                                if (distance > 20000){
-                                    Log.d(TAG, "onDataChange: Distance from current location: "+ distance);
-                                    showLocation(loc.getLatitude(), loc.getLatitude(), shopInfo.getShopName());
-                                    
-                                }
+            ProgressBar progressBar = new ProgressBar(getApplicationContext());
+            progressBar.setVisibility(View.VISIBLE);
 
-                            }catch (NullPointerException e){
-                                Log.d(TAG, "onDataChange: Null Object Referenced at the database.");
+            query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    if (queryDocumentSnapshots.isEmpty()){
+                        Toast.makeText(HomeMapActivity.this, "No active shops were found.", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onSuccess: No active shops were found.");
+                    }else {
+                        for (QueryDocumentSnapshot data : queryDocumentSnapshots) {
+                            shop = data.toObject(ShopData.class);
+                            Location loc = new Location("");
+                            loc.setLongitude(Double.valueOf(shop.getLatLng().get(1)));
+                            loc.setLatitude(Double.valueOf(shop.getLatLng().get(0)));
+                            distance = deviceLoc.distanceTo(loc) / 1000;
+                            if (distance < 20) {
+                                Log.d(TAG, "onDataChange: Distance from current location: " + distance);
+                                showLocation(loc.getLatitude(), loc.getLatitude(), shop.getShopName());
                             }
                         }
 
                     }
-
                 }
-
+            }).addOnFailureListener(new OnFailureListener() {
                 @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, "onFailure: Failed to retrieve data from firestore.");
+                    Toast.makeText(getApplicationContext(), "failed to connect.", Toast.LENGTH_SHORT).show();
                 }
             });
+            progressBar.setVisibility(View.INVISIBLE);
         }else {
             Toast.makeText(this, "Please connect to internet", Toast.LENGTH_SHORT).show();
         }
@@ -214,9 +216,14 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        getLocationPermission();
+        initMap();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        databaseReference.removeEventListener(valueEventListener);
-        Log.d(TAG, "onDestroy: Database event listener destroyed successfully.");
     }
 }

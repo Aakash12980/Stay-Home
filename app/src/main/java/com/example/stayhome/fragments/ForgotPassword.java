@@ -3,6 +3,10 @@ package com.example.stayhome.fragments;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -10,117 +14,88 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.stayhome.LoginSignup;
 import com.example.stayhome.R;
-import com.example.stayhome.data.ForgotPasswordData;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPassword extends AppCompatActivity {
-    private String uname;
     private String email;
-    private DatabaseReference databaseReference;
-    private ValueEventListener valueEventListener;
-    private ProgressBar progressBar;
+    private TextInputLayout emailView;
 
-    public static final String TAG = "FORGOT PASSWORD ACTIVITY";
+    public static final String TAG = "FORGOT PSWD ACTIVITY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
-        final TextInputLayout unameView = findViewById(R.id.uname_input);
-        final TextInputLayout emailView = findViewById(R.id.email_input);
+        emailView = findViewById(R.id.email_input);
         MaterialButton submitBtn = findViewById(R.id.submit_btn);
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    uname = unameView.getEditText().getText().toString().trim().toLowerCase();
-                }catch (NullPointerException e){
-                    uname = "";
-                }
-                try {
-                    email = emailView.getEditText().getText().toString().trim().toLowerCase();
-                }catch (NullPointerException e){
-                    email = "";
-                }
+                sendVerificationMail();
+            }
+        });
 
-                if (TextUtils.isEmpty(uname)){
-                    unameView.setError("This field cannot be empty.");
-                    return;
-                }else if (TextUtils.isEmpty(email)){
-                    emailView.setError("This field cannot be empty.");
-                    return;
-                }
-                progressBar = new ProgressBar(getApplicationContext());
+
+    }
+    private void sendVerificationMail(){
+        if (validateInputs()){
+            if (isNetworkAvailable()) {
+                ProgressBar progressBar = new ProgressBar(getApplicationContext());
                 progressBar.setVisibility(View.VISIBLE);
+                FirebaseAuth auth = FirebaseAuth.getInstance();
 
-
-                databaseReference = FirebaseDatabase.getInstance().getReference("ForgotPassword").child(uname);
-                valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
+                auth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()){
-                            ForgotPasswordData data = dataSnapshot.getValue(ForgotPasswordData.class);
-                            try {
-                                String userEmail = data.getEmail();
-                                if (userEmail.equals(email)){
-                                    String tempKey = String.valueOf(data.getTempKey());
-                                    try {
-                                        progressBar.setVisibility(View.INVISIBLE);
-                                        openDialog(uname);
-                                    }catch (android.content.ActivityNotFoundException ex){
-                                        Toast.makeText(getApplicationContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                }else{
-                                    emailView.setError("The email does not belong to this user.");
-                                    progressBar.setVisibility(View.INVISIBLE);
-                                    return;
-                                }
-                            }catch (NullPointerException e){
-                                Toast.makeText(ForgotPassword.this, "Request failed! This user has not set email.", Toast.LENGTH_SHORT).show();
-                            }
-
-                        }else{
-                            Toast.makeText(ForgotPassword.this, "Request failed! This user has not set email.", Toast.LENGTH_SHORT).show();
-                            progressBar.setVisibility(View.INVISIBLE);
-                            return;
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "Email sent.");
+                            Toast.makeText(ForgotPassword.this, "Check your email to reset password.", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getApplicationContext(), LoginSignup.class));
+                            finishAffinity();
+                        }else {
+                            Toast.makeText(ForgotPassword.this, "Failed to send reset email.", Toast.LENGTH_SHORT).show();
                         }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
                     }
                 });
                 progressBar.setVisibility(View.INVISIBLE);
+            }else {
+                Toast.makeText(this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
             }
-        });
-    }
-    private void openDialog(String uname){
-        Bundle bundle = new Bundle();
-        bundle.putString("uname", uname);
-        UpdateField updateField = new UpdateField();
-        updateField.setArguments(bundle);
-        updateField.show(getSupportFragmentManager(), "forgot");
+
+        }
+
     }
 
+    private boolean validateInputs(){
+        try {
+            email = emailView.getEditText().getText().toString().trim().toLowerCase();
+        }catch (NullPointerException e){
+            email = "";
+        }
+        if (TextUtils.isEmpty(email)){
+            emailView.setError("This field cannot be empty.");
+            return false;
+        }
+        return true;
+
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        try {
-            databaseReference.removeEventListener(valueEventListener);
-        }catch (NullPointerException e){
-            Log.d("Forgot Password", "onDestroyView: Listener not destroyed.");
-        }
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

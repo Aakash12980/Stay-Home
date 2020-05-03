@@ -68,6 +68,7 @@ public class SettingFragment extends Fragment {
     private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
     private static final String TAG = "SETTING FRAGMENT";
     private Context mContext;
+    private DocumentReference documentReference;
 
     private OnFragmentInteractionListener mListener;
     private FirebaseUser user;
@@ -148,7 +149,7 @@ public class SettingFragment extends Fragment {
         email.setText(user.getEmail());
         StorageReference storageReference = firebaseStorage.getReference("ProfilePic")
                 .child(user.getUid()).child("profile.jpg");
-        final DocumentReference documentReference = FirebaseFirestore.getInstance().collection("ShopData").document(user.getUid());
+        documentReference = FirebaseFirestore.getInstance().collection("ShopData").document(user.getUid());
         if (isNetworkAvailable()){
             progressBar = new ProgressBar(mContext);
             progressBar.setVisibility(View.VISIBLE);

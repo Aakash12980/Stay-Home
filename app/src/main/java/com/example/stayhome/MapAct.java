@@ -1,21 +1,15 @@
 package com.example.stayhome;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -27,40 +21,32 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.Api;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.android.material.button.MaterialButton;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,20 +62,21 @@ public class MapAct extends AppCompatActivity implements OnMapReadyCallback, Goo
     private Marker startMarker;
     private double currentLat, currentLng;
     private String currentAddress;
+    private String name, genre, contact;
+    private FirebaseUser user;
+    private String newAddress, newLat, newLng;
 
     private boolean locationPermissionGranted = false;
 
     private static final String FINE_LOCATION = android.Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
-    private static final int REQUEST_CHECK_SETTINGS = 43;
     private static final float DEFAULT_ZOOM = 15f;
     private static final String TAG = "MapActivity";
     private AutocompleteSupportFragment autocompleteFragment;
     private AppCompatTextView addressInfo;
     private ImageView gpsView;
-    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private ArrayList<String > currentLatLng = new ArrayList<>();
+    private List<String > currentLatLng = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,50 +88,91 @@ public class MapAct extends AppCompatActivity implements OnMapReadyCallback, Goo
         addressInfo = findViewById(R.id.address_info);
         gpsView = (ImageView) findViewById(R.id.gps);
 
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(String.valueOf(R.string.PREF_NAME), MODE_PRIVATE);
-        final String uname = sharedPref.getString("username", null);
-
-        getLocationPermission();
-        initMap();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString("fragment", "setting");
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                i.putExtras(bundle);
-                startActivity(i);
-                finish();
+
+                if (getIntent().hasExtra("name")){
+                    clearExtras();
+                    Intent intent = new Intent(getApplicationContext(), CreateShop.class);
+                    intent.putExtra("name", name);
+                    intent.putExtra("genre", genre);
+                    intent.putExtra("contact", contact);
+                    if (getIntent().hasExtra("address")){
+                        intent.putExtra("address", newAddress);
+                        intent.putExtra("lat", newLat);
+                        intent.putExtra("lng", newLng);
+                    }
+                    startActivity(intent);
+                    finish();
+                }else {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("fragment", "setting");
+                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                    i.putExtras(bundle);
+                    startActivity(i);
+                    finish();
+                }
+
             }
         });
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                currentLatLng.add(String.valueOf(currentLat));
+                currentLatLng.add(String.valueOf(currentLng));
+                Map<String, Object > newData = new HashMap<>();
+                newData.put("shopLoc", currentAddress);
+                newData.put("latLng", currentLatLng);
+                Log.d(TAG, "onClick: Current user location selected: "+ currentAddress);
                 if (isNetworkAvailable()){
-                    currentLatLng.add(String.valueOf(currentLat));
-                    currentLatLng.add(String.valueOf(currentLng));
-                    Map<String, Object > newData = new HashMap<>();
-                    newData.put("shopLoc", currentAddress);
-                    newData.put("latLng", currentLatLng);
-                    Log.d(TAG, "onClick: Current user location: "+ currentAddress);
-                    firebaseDatabase.getReference("ShopInfo").child(uname)
-                            .updateChildren(newData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Bundle extras = new Bundle();
-                            extras.putString("fragment", "setting");
-                            Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                            i.putExtras(extras);
-                            startActivity(i);
-                            finish();
-                        }
-                    });
+                    if (getIntent().hasExtra("name")){
+                        clearExtras();
+                        Intent intent = new Intent(getApplicationContext(), CreateShop.class);
+                        intent.putExtra("name", name);
+                        intent.putExtra("genre", genre);
+                        intent.putExtra("contact", contact);
+                        intent.putExtra("address", currentAddress);
+                        intent.putExtra("lat", String.valueOf(currentLat));
+                        intent.putExtra("lng", String.valueOf(currentLng));
+                        startActivity(intent);
+                        finish();
+                    }else {
+                        ProgressBar progressBar = new ProgressBar(getApplicationContext());
+                        progressBar.setVisibility(View.VISIBLE);
+                        FirebaseFirestore.getInstance().collection("ShopData").document(user.getUid())
+                                .update(newData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "onSuccess: User location changed to :"+ currentAddress);
+                                Bundle extras = new Bundle();
+                                extras.putString("fragment", "setting");
+                                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                                i.putExtras(extras);
+                                startActivity(i);
+                                finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "onFailure: Failed to change location: "+ e.getMessage());
+                                Toast.makeText(MapAct.this, "Failed to change location.", Toast.LENGTH_SHORT).show();
+                                Bundle extras = new Bundle();
+                                extras.putString("fragment", "setting");
+                                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                                i.putExtras(extras);
+                                startActivity(i);
+                                finish();
+                            }
+                        });
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
 
                 }else {
-                    Toast.makeText(MapAct.this, "Pease check your internet connection.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MapAct.this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -323,6 +351,36 @@ public class MapAct extends AppCompatActivity implements OnMapReadyCallback, Goo
         }
     }
 
+    private void getExtras(){
+        name = getIntent().getStringExtra("name");
+        genre = getIntent().getStringExtra("genre");
+        contact = getIntent().getStringExtra("contact");
+        if(getIntent().hasExtra("address")){
+            newAddress = getIntent().getStringExtra("address");
+            newLat = getIntent().getStringExtra("lat");
+            newLng = getIntent().getStringExtra("lng");
+        }
+
+    }
+    private void clearExtras(){
+        getIntent().removeExtra("name");
+        getIntent().removeExtra("genre");
+        getIntent().removeExtra("contact");
+        getIntent().removeExtra("address");
+        getIntent().removeExtra("lat");
+        getIntent().removeExtra("lng");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (getIntent().hasExtra("name")){
+            getExtras();
+        }
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        getLocationPermission();
+        initMap();
+    }
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager

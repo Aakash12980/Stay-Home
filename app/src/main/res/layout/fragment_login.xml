@@ -61,17 +61,17 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
 
-<!--        <TextView-->
-<!--            android:id="@+id/forgot_password"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Forgot Password?"-->
-<!--            android:layout_marginBottom="16dp"-->
-<!--            android:layout_below="@+id/login_button"-->
-<!--            android:layout_alignParentRight="true"-->
-<!--            android:layout_alignParentEnd="true"-->
-<!--            android:textSize="20sp"-->
-<!--            android:clickable="true"/>-->
+        <TextView
+            android:id="@+id/forgot_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Forgot Password?"
+            android:layout_marginBottom="16dp"
+            android:layout_below="@+id/login_button"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:textSize="20sp"
+            android:clickable="true"/>
         <ProgressBar
             android:id="@+id/login_progress_bar"
             android:layout_width="wrap_content"

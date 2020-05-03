@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.stayhome.MainActivity;
@@ -62,7 +63,7 @@ public class LoginFragment extends Fragment{
         emailView = (TextInputLayout) rootView.findViewById(R.id.login_email);
         passwordView = (TextInputLayout) rootView.findViewById(R.id.login_password);
         loginBtn = (MaterialButton) rootView.findViewById(R.id.login_button);
-//        TextView forgotPasswordView = (TextView) rootView.findViewById(R.id.forgot_password);
+        TextView forgotPasswordView = (TextView) rootView.findViewById(R.id.forgot_password);
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,13 +73,12 @@ public class LoginFragment extends Fragment{
                 }
             }
         });
-//        forgotPasswordView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(getContext(), ForgotPassword.class));
-//
-//            }
-//        });
+        forgotPasswordView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), ForgotPassword.class));
+            }
+        });
 
         return rootView;
     }

@@ -39,6 +39,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -70,6 +71,7 @@ public class HomeOpen extends Fragment {
     private TextView noData;
     private TextView title;
     private ShopData shop;
+    private Query queryDocumentSnapshot;
 
 
     private OnFragmentInteractionListener mListener;
@@ -105,11 +107,13 @@ public class HomeOpen extends Fragment {
     }
     private void updateUI(){
         title.setText("Currently Opened Shops");
+        Query queryDocumentSnapshot = FirebaseFirestore.getInstance().collection("ShopData")
+                .whereEqualTo("active", true);
         if (isNetworkAvailable()){
             ProgressBar progressBar = new ProgressBar(getContext());
             progressBar.setVisibility(View.VISIBLE);
-            FirebaseFirestore.getInstance().collection("ShopData")
-                    .whereEqualTo("active", true).get().addOnSuccessListener(getActivity(), new OnSuccessListener<QuerySnapshot>() {
+
+            queryDocumentSnapshot.get().addOnSuccessListener(getActivity(), new OnSuccessListener<QuerySnapshot>() {
                 @Override
                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                     if (queryDocumentSnapshots.isEmpty()){
@@ -122,7 +126,7 @@ public class HomeOpen extends Fragment {
                             Location loc = new Location("");
                             loc.setLongitude(Double.valueOf(shop.getLatLng().get(1)));
                             loc.setLatitude(Double.valueOf(shop.getLatLng().get(0)));
-                            distance = deviceLoc.distanceTo(loc);
+                            distance = deviceLoc.distanceTo(loc)/1000;
                             if (distance < 20000){
                                 shop.setDistance(distance);
                                 Log.d(TAG, "onDataChange: Distance: "+ distance);
