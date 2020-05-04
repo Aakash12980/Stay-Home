@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -25,6 +26,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -39,11 +43,13 @@ public class UpdateField extends AppCompatDialogFragment {
     private String data;
     private String frag;
     private FirebaseUser user;
+    private TextInputLayout passwordView;
 
     private static final String TAG = "DIALOG BOX SETTING";
     private TextInputLayout inputView;
     private TextView title;
     private ProgressBar progressBar;
+    private String newPwd;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -55,7 +61,9 @@ public class UpdateField extends AppCompatDialogFragment {
         MaterialButton cancelBtn = view.findViewById(R.id.cancel_btn);
         inputView = view.findViewById(R.id.dialog_input);
         title = view.findViewById(R.id.dialog_title);
+        passwordView = view.findViewById(R.id.dialog_input_password);
         builder.setView(view);
+
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +102,6 @@ public class UpdateField extends AppCompatDialogFragment {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.d(TAG, "onSuccess: New value set for " +field);
-                    Toast.makeText(getContext(), "New value is changed successfully.", Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -120,6 +127,29 @@ public class UpdateField extends AppCompatDialogFragment {
         }catch (NullPointerException e) {
             data = "";
         }
+        if (frag.equals("New Email") ){
+            if (!Patterns.EMAIL_ADDRESS.matcher(data).matches()){
+                inputView.setError("Invalid email format.");
+                return false;
+            }
+        }
+        try {
+            if (frag.equals("New Password")){
+                newPwd = passwordView.getEditText().getText().toString().trim();
+            }
+        }catch (NullPointerException e){
+            newPwd = "";
+        }
+
+        if (frag.equals("New Password")){
+            if (TextUtils.isEmpty(newPwd)){
+                passwordView.setError("This field is required.");
+                return false;
+            }else if (newPwd.length() < 8){
+                passwordView.setError("Password must be at least 8 characters in length.");
+                return false;
+            }
+        }
 
         if (TextUtils.isEmpty(data)) {
             inputView.setError("This field cannot be empty!");
@@ -132,6 +162,14 @@ public class UpdateField extends AppCompatDialogFragment {
         frag = getArguments().getString("frag", "name");
         getArguments().remove("frag");
         title.setText(frag);
+        if (frag.equals("New Password") ){
+            passwordView.setVisibility(View.VISIBLE);
+            passwordView.getEditText().setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            passwordView.setPasswordVisibilityToggleEnabled(true);
+            inputView.setPasswordVisibilityToggleEnabled(true);
+            inputView.getEditText().setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            inputView.getEditText().setHint("Old Password");
+        }
         switch (frag){
             case "New Name":
                 field = "shopName";
@@ -159,18 +197,32 @@ public class UpdateField extends AppCompatDialogFragment {
         if (isNetworkAvailable()){
             progressBar = new ProgressBar(getContext());
             progressBar.setVisibility(View.VISIBLE);
-            user.updateEmail(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+            String email = user.getEmail();
+            AuthCredential credential = EmailAuthProvider.getCredential(email, data);
+            user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()){
-                        Log.d(TAG, "onComplete: Email address changed successfully.");
-                        Toast.makeText(getContext(), "Email changed successfully.", Toast.LENGTH_SHORT).show();
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        user.updateEmail(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    Log.d(TAG, "onComplete: Email address changed successfully.");
+                                    Toast.makeText(getContext(), "Email changed successfully.", Toast.LENGTH_SHORT).show();
+                                }else {
+                                    Log.d(TAG, "onComplete: Failed to change email.");
+                                    Toast.makeText(getContext(), "Failed to change email.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                     }else {
                         Log.d(TAG, "onComplete: Failed to change email.");
                         Toast.makeText(getContext(), "Failed to change email.", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
+
             progressBar.setVisibility(View.INVISIBLE);
         }else {
             Toast.makeText(getContext(), "Please check your internet connection.", Toast.LENGTH_SHORT).show();
@@ -182,12 +234,24 @@ public class UpdateField extends AppCompatDialogFragment {
         if (isNetworkAvailable()){
             progressBar = new ProgressBar(getContext());
             progressBar.setVisibility(View.VISIBLE);
-            user.updatePassword(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+            String email = user.getEmail();
+            AuthCredential credential = EmailAuthProvider.getCredential(email, data);
+            user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()){
-                        Log.d(TAG, "onComplete: Password changed successfully.");
-                        Toast.makeText(getContext(), "Email changed successfully.", Toast.LENGTH_SHORT).show();
+                        user.updatePassword(newPwd).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    Log.d(TAG, "onComplete: Password changed successfully.");
+                                    Toast.makeText(getContext(), "Email changed successfully.", Toast.LENGTH_SHORT).show();
+                                }else {
+                                    Log.d(TAG, "onComplete: Failed to change password.");
+                                    Toast.makeText(getContext(), "Failed to change password.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                     }else {
                         Log.d(TAG, "onComplete: Failed to change password.");
                         Toast.makeText(getContext(), "Failed to change password.", Toast.LENGTH_SHORT).show();

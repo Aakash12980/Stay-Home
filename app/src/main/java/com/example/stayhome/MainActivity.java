@@ -75,11 +75,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        View headerView = (View) navigationView.getHeaderView(0);
-        nameView = headerView.findViewById(R.id.shop_prof_name);
-        locView = headerView.findViewById(R.id.shop_prof_loc);
-        imgView = headerView.findViewById(R.id.shop_prof_img);
-        
+        navigationView = (NavigationView) findViewById(R.id.nav_bar_home);
+        if (user != null && user.getDisplayName() != null){
+            View headerView = (View) navigationView.getHeaderView(0);
+            nameView = headerView.findViewById(R.id.shop_prof_name);
+            locView = headerView.findViewById(R.id.shop_prof_loc);
+            imgView = headerView.findViewById(R.id.shop_prof_img);
+        }
+
+
         if (savedInstanceState == null){
             if (getIntent().hasExtra("fragment")){
                 String load_frag = getIntent().getStringExtra("fragment");
@@ -93,14 +97,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.nav_fragment_container, new HomeFragment(), "home_frag").addToBackStack("home_frag").commit();
             }
         }
-
         getSupportFragmentManager().popBackStack("home_frag", 0);
 
         toolbar = findViewById(R.id.nav_toolbar);
         toolbar.setBackgroundColor(getResources().getColor(R.color.icon_color));
         setSupportActionBar(toolbar);
 
-        navigationView = (NavigationView) findViewById(R.id.nav_bar_home);
         navigationView.setNavigationItemSelectedListener(this);
 
         drawerLayout = findViewById(R.id.nav_drawer);
@@ -121,7 +123,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.nav_fragment_container, new CovidUpdateFragment(), "stat_frag").addToBackStack("stat_frag").commit();
                 break;
             case R.id.nav_bar_shop_frag:
-                getSupportFragmentManager().beginTransaction().replace(R.id.nav_fragment_container, new MyShopFragment(), "shop_frag").addToBackStack("shop_frag").commit();
+                if (user.getDisplayName().length() >= 1){
+                    Log.d(TAG, "onNavigationItemSelected: DISPLAY NAME: "+ user.getDisplayName());
+                    getSupportFragmentManager().beginTransaction().replace(R.id.nav_fragment_container, new MyShopFragment(), "shop_frag").addToBackStack("shop_frag").commit();
+                }else {
+                    navigationView.getMenu().getItem(0).setChecked(true);
+                    startActivity(new Intent(getApplicationContext(), CreateShop.class));
+                }
                 break;
             case R.id.nav_bar_setting_frag:
                 getSupportFragmentManager().beginTransaction().replace(R.id.nav_fragment_container, new SettingFragment(), "setting_frag").addToBackStack("setting_frag").commit();
@@ -130,11 +138,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(getApplicationContext(), LoginSignup.class));
                 break;
             case R.id.nav_bar_logout_frag:
-                SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(String.valueOf(R.string.PREF_NAME), MODE_PRIVATE);
-                sharedPreferences.edit().clear().apply();
-
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                finish();
+                FirebaseAuth.getInstance().signOut();
+                navigationView.getMenu().getItem(0).setChecked(true);
+                startActivity(new Intent(getApplicationContext(), LoginSignup.class));
+                finishAffinity();
         }
         drawerLayout.closeDrawer(GravityCompat.START);
 
@@ -186,7 +193,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void hideItem()
     {
-        navigationView = (NavigationView) findViewById(R.id.nav_bar_home);
         Menu nav_Menu = (Menu) navigationView.getMenu();
         nav_Menu.findItem(R.id.nav_bar_setting_frag).setVisible(false);
         nav_Menu.findItem(R.id.nav_bar_logout_frag).setVisible(false);
@@ -198,7 +204,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     {
         navigationView = (NavigationView) findViewById(R.id.nav_bar_home);
         Menu nav_Menu = (Menu) navigationView.getMenu();
-        nav_Menu.findItem(R.id.nav_bar_setting_frag).setVisible(false);
+        if (user.getDisplayName().length() < 1){
+            nav_Menu.findItem(R.id.nav_bar_setting_frag).setVisible(false);
+        }
+
 //        nav_Menu.findItem(R.id.nav_bar_setting_frag).setVisible(true);
 //        nav_Menu.findItem(R.id.nav_bar_logout_frag).setVisible(true);
         nav_Menu.findItem(R.id.nav_bar_login_frag).setVisible(false);
@@ -260,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onStart();
         getLocationPermission();
         user = FirebaseAuth.getInstance().getCurrentUser();
+        Log.d(TAG, "onStart: This is on start Callback.");
         updateUI();
     }
 

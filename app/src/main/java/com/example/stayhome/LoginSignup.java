@@ -3,6 +3,7 @@ package com.example.stayhome;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.stayhome.adpaters.LoginViewPagerAdapter;
@@ -21,5 +22,11 @@ public class LoginSignup extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.login_signup_sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        finishAffinity();
     }
 }

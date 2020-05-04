@@ -30,6 +30,21 @@
             android:paddingRight="8dp"
             android:hint="Enter Value"/>
     </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_below="@id/dialog_input"
+        android:layout_marginTop="15dp"
+        android:visibility="gone"
+        android:id="@+id/dialog_input_password">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:hint="New Password"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
@@ -38,7 +53,7 @@
         android:paddingBottom="14dp"
         android:text="Save"
         android:id="@+id/save_btn"
-        android:layout_below="@+id/dialog_input"
+        android:layout_below="@+id/dialog_input_password"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
 
@@ -53,7 +68,7 @@
         android:id="@+id/cancel_btn"
         android:layout_toLeftOf="@+id/save_btn"
         android:layout_toStartOf="@+id/save_btn"
-        android:layout_below="@+id/dialog_input"/>
+        android:layout_below="@+id/dialog_input_password"/>
 
 
 </RelativeLayout>

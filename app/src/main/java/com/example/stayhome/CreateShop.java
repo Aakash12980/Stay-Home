@@ -15,10 +15,16 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.stayhome.data.ShopData;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,7 +38,7 @@ public class CreateShop extends AppCompatActivity {
     private String loc;
     private String contact;
     private String lat, lng;
-    private String uid;
+    private FirebaseUser user;
     TextInputLayout shopName;
     TextInputLayout shopGenre;
     TextInputLayout shopLoc;
@@ -42,6 +48,8 @@ public class CreateShop extends AppCompatActivity {
     private List<String> latlng = new ArrayList<>();
     private ProgressBar progressBar;
     public static final String TAG = "CREATE SHOP";
+    private DocumentReference documentReference;
+    private boolean flag = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +60,9 @@ public class CreateShop extends AppCompatActivity {
         shopGenre = findViewById(R.id.create_genre);
         shopLoc = findViewById(R.id.create_location);
         shopContact = findViewById(R.id.create_contact);
-        TextInputLayout createBtn = findViewById(R.id.create_button);
+        MaterialButton createBtn = findViewById(R.id.create_button);
 
-        shopLoc.setOnClickListener(new View.OnClickListener() {
+        shopLoc.getEditText().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MapAct.class);
@@ -103,8 +111,8 @@ public class CreateShop extends AppCompatActivity {
         shopData.setShopGenre(genre);
         shopData.setLatLng(latlng);
         shopData.setShopLoc(loc);
-        shopData.setUid(uid);
-        final DocumentReference documentReference = firestore.collection("ShopData").document(uid);
+        shopData.setUid(user.getUid());
+        documentReference = firestore.collection("ShopData").document(user.getUid());
         if (isNetworkAvailable()){
             progressBar = new ProgressBar(getApplicationContext());
             progressBar.setVisibility(View.VISIBLE);
@@ -118,10 +126,12 @@ public class CreateShop extends AppCompatActivity {
                         documentReference.set(shopData).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "onSuccess: Shop account create for this user.");
-                                progressBar.setVisibility(View.INVISIBLE);
-                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                                finishAffinity();
+                                if (setDisplayName()){
+                                    Log.d(TAG, "onSuccess: Shop account create for this user.");
+                                    progressBar.setVisibility(View.INVISIBLE);
+                                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                    finishAffinity();
+                                }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -142,6 +152,37 @@ public class CreateShop extends AppCompatActivity {
         }
         progressBar.setVisibility(View.INVISIBLE);
 
+    }
+    private boolean setDisplayName(){
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build();
+
+        if (isNetworkAvailable()){
+            user.updateProfile(profileUpdates)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "Display name is updated for "+ name);
+                            }else {
+                                flag = false;
+                                documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(CreateShop.this, "Failed to create shop account. Please try again later.", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                Log.d(TAG, "onComplete: Failed to set display name.");
+                            }
+                        }
+                    });
+
+        }else {
+            flag = false;
+            Toast.makeText(this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
+        }
+        return flag;
     }
     private boolean validateInputs(){
         try {
@@ -211,6 +252,6 @@ public class CreateShop extends AppCompatActivity {
         if (getIntent().hasExtra("name")){
             getExtras();
         }
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        user = FirebaseAuth.getInstance().getCurrentUser();
     }
 }

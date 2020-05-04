@@ -87,6 +87,7 @@
                         android:id="@+id/setting_name_shop"/>
                 </LinearLayout>
 
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -178,6 +179,18 @@
                         android:padding="8dp"
                         android:id="@+id/setting_email_shop"/>
                 </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Change Password"
+                    android:id="@+id/setting_password"
+                    android:textColor="@android:color/black"
+                    android:padding="8dp" />
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"

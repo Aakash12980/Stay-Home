@@ -2,15 +2,26 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/create_shop_title"
+            android:text="Shop Details"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:padding="12dp"
+            android:layout_centerHorizontal="true"/>
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/create_shop_name"
+            android:layout_below="@+id/create_shop_title"
             android:layout_centerHorizontal="true"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_marginBottom="10dp"
@@ -63,7 +74,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:enabled="false"
+                android:clickable="true"
+                android:focusable="false"
                 android:hint="Select Location of your shop"
                 android:paddingRight="8dp"
                 android:paddingLeft="8dp"/>

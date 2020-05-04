@@ -34,7 +34,6 @@ public class DataLoader extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        Log.d(TAG, "onPreExecute: On......PRE-EXECUTE...................");
     }
 
     @Override
@@ -46,14 +45,13 @@ public class DataLoader extends AsyncTask<Void, Void, String> {
         } catch (IOException e) {
             Log.e(TAG, "Problem making the HTTP request.", e);
         }
-        Log.d(TAG, "doInBackground: "+ jsonResponse);
         return jsonResponse;
     }
 
     @Override
     protected void onPostExecute(String s) {
         if (TextUtils.isEmpty(s)) {
-            Log.d(TAG, "onPreExecute: On......NULL JSON RESPONSE...................");
+            Log.d(TAG, "onPreExecute: On......NULL JSON RESPONSE");
             return ;
         }
         if (country.equals("Worldwide")){
@@ -70,8 +68,6 @@ public class DataLoader extends AsyncTask<Void, Void, String> {
                 covidData.setTotalDeaths(data.getString("TotalDeaths"));
                 covidData.setNewRecovered(data.getString("NewRecovered"));
                 covidData.setTotalRecovered(data.getString("TotalRecovered"));
-                Log.d(TAG, "onPostExecute: DATAAAAAAAA......"+ data.getLong("NewConfirmed"));
-                Log.d(TAG, "onPostExecute: DATAAAAAAAA......"+ data.getLong("TotalRecovered"));
 
             } catch (JSONException e){
                 Log.e("QueryUtils", "Problem parsing the earthquake JSON results", e);

@@ -90,6 +90,7 @@ public class SettingFragment extends Fragment {
         View locView = rootView.findViewById(R.id.setting_location);
         final View imageView = rootView.findViewById(R.id.setting_pic_change);
         View emailView = rootView.findViewById(R.id.setting_email);
+        View passwordView = rootView.findViewById(R.id.setting_password);
 
         loc = rootView.findViewById(R.id.setting_location_shop);
         name = rootView.findViewById(R.id.setting_name_shop);
@@ -110,6 +111,12 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 openDialog("New Name");
+            }
+        });
+        passwordView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialog("New Password");
             }
         });
 

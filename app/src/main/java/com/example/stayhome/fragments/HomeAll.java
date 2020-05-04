@@ -31,7 +31,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -62,7 +61,6 @@ public class HomeAll extends Fragment {
     private Context mContext;
     private Location deviceLoc = new Location("");
     private double distance;
-    private DatabaseReference databaseReference;
     private View rootView;
     private RecyclerView recyclerView;
     private OpenAllShopListAdapter adapter;

@@ -75,18 +75,14 @@ public class CovidUpdateFragment extends Fragment {
             country = getArguments().getString("newSelection", "Worldwide");
             Log.d(TAG, "onCreateView: Country Name: "+ country);
         }catch (NullPointerException e){
-            Log.d(TAG, "onCreateView: AGAIN WORLDWIDE.....");
             country = "Worldwide";
         }
         countryName.setText(country);
-
         if (isNetworkAvailable()){
             setCountryDetails(country);
         }else {
             Toast.makeText(getContext(), "Please check your internet connection.", Toast.LENGTH_SHORT).show();
         }
-
-
 
         countrySelect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,6 +167,12 @@ public class CovidUpdateFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -210,13 +212,11 @@ public class CovidUpdateFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause: On Pause method is called.......");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume: On Resume method has been called.......");
     }
 
 

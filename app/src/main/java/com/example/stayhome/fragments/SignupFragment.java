@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +69,7 @@ public class SignupFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (validatePassword(pwd1, pwd2) && validateInputs()){
+                if (validateInputs() && validatePassword(pwd1, pwd2) ){
                     createUser();
 
                 }else {
@@ -140,7 +141,7 @@ public class SignupFragment extends Fragment {
             pwd1 = "";
         }
         try {
-            pwd2 = password2View.getEditText().getText().toString().trim().toLowerCase();
+            pwd2 = password2View.getEditText().getText().toString().trim();
         }catch (NullPointerException e){
             pwd2 = "";
         }
@@ -148,11 +149,18 @@ public class SignupFragment extends Fragment {
         if (TextUtils.isEmpty(pwd1)){
             password1View.setError("Password is required!");
             return false;
-        }else if (TextUtils.isEmpty(pwd2)){
+        }else if (pwd1.length() < 8){
+            password1View.setError("Password must be at least 8 characters in length.");
+            return false;
+
+        } else if (TextUtils.isEmpty(pwd2)){
             password2View.setError("Password confirmation is required.");
             return false;
         }else if (TextUtils.isEmpty(email)){
-            emailView.setError("Please Enter the type of your shop");
+            emailView.setError("Email is required.");
+            return false;
+        }else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            emailView.setError("Invalid email format.");
             return false;
         }
         return true;

@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
@@ -32,8 +33,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -63,6 +62,8 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_map);
+
+        initMap();
 
         gpsView = findViewById(R.id.home_gps);
     }
@@ -104,7 +105,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                             loc.setLatitude(Double.valueOf(shop.getLatLng().get(0)));
                             distance = deviceLoc.distanceTo(loc) / 1000;
                             if (distance < 20) {
-                                Log.d(TAG, "onDataChange: Distance from current location: " + distance);
+                                Log.d(TAG, "onDataChange: HOME MAP ACTIVITY. Distance from current location: " + distance);
                                 showLocation(loc.getLatitude(), loc.getLatitude(), shop.getShopName());
                             }
                         }
@@ -133,10 +134,9 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
             gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), DEFAULT_ZOOM));
             
         }else {
-            startMarker = gMap.addMarker(new MarkerOptions()
+            gMap.addMarker(new MarkerOptions()
                     .position(new LatLng(lat, lng))
                     .title(shopName));
-            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), DEFAULT_ZOOM));
         }
     }
     private void getCurrentLocation(){
@@ -220,6 +220,12 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         super.onStart();
         getLocationPermission();
         initMap();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        finishAffinity();
     }
 
     @Override
