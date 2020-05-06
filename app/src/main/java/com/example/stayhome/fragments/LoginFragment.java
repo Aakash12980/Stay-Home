@@ -98,7 +98,7 @@ public class LoginFragment extends Fragment{
 
                     }else {
                         Log.w(TAG, "onComplete: Sign in with email failed. ",task.getException() );
-                        Toast.makeText(getContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });

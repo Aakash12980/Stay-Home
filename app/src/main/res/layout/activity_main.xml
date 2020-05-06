@@ -6,6 +6,7 @@
     android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".MainActivity"
     tools:openDrawer="start">
 
@@ -17,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/nav_toolbar"
+            android:background="@color/background"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             android:elevation="4dp"/>
@@ -29,6 +31,8 @@
     <com.google.android.material.navigation.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:background="@color/background"
+        app:itemTextColor="@android:color/white"
         android:layout_marginTop="20dp"
         android:layout_gravity="start"
         android:id="@+id/nav_bar_home"

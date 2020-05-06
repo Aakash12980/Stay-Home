@@ -165,8 +165,8 @@ public class UpdateField extends AppCompatDialogFragment {
         if (frag.equals("New Password") ){
             passwordView.setVisibility(View.VISIBLE);
             passwordView.getEditText().setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            passwordView.setPasswordVisibilityToggleEnabled(true);
-            inputView.setPasswordVisibilityToggleEnabled(true);
+            passwordView.setPasswordVisibilityToggleEnabled(false);
+            inputView.setPasswordVisibilityToggleEnabled(false);
             inputView.getEditText().setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
             inputView.getEditText().setHint("Old Password");
         }
@@ -212,13 +212,13 @@ public class UpdateField extends AppCompatDialogFragment {
                                     Toast.makeText(getContext(), "Email changed successfully.", Toast.LENGTH_SHORT).show();
                                 }else {
                                     Log.d(TAG, "onComplete: Failed to change email.");
-                                    Toast.makeText(getContext(), "Failed to change email.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
                     }else {
                         Log.d(TAG, "onComplete: Failed to change email.");
-                        Toast.makeText(getContext(), "Failed to change email.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -248,13 +248,13 @@ public class UpdateField extends AppCompatDialogFragment {
                                     Toast.makeText(getContext(), "Email changed successfully.", Toast.LENGTH_SHORT).show();
                                 }else {
                                     Log.d(TAG, "onComplete: Failed to change password.");
-                                    Toast.makeText(getContext(), "Failed to change password.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
                     }else {
                         Log.d(TAG, "onComplete: Failed to change password.");
-                        Toast.makeText(getContext(), "Failed to change password.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });

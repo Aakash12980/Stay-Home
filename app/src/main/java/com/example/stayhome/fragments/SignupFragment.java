@@ -94,7 +94,7 @@ public class SignupFragment extends Fragment {
                         signIn();
                     }else {
                         Log.w(TAG, "Create user task failed: ", task.getException());
-                        Toast.makeText(getActivity(), "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -119,7 +119,7 @@ public class SignupFragment extends Fragment {
 
                     }else {
                         Log.w(TAG, "onComplete: Sign in with email failed. ",task.getException() );
-                        Toast.makeText(getContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                     progressBar.setVisibility(View.INVISIBLE);
                 }

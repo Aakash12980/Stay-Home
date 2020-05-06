@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -207,12 +206,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (user.getDisplayName().length() < 1){
             nav_Menu.findItem(R.id.nav_bar_setting_frag).setVisible(false);
         }
+        if (user.getDisplayName().length() > 0){
+            View navHeader = navigationView.inflateHeaderView(R.layout.nav_header_view);
+            navHeader.setVisibility(View.VISIBLE);
+        }else {
+            View navHeader = navigationView.inflateHeaderView(R.layout.nav_header_view);
+            navHeader.setVisibility(View.GONE);
+        }
 
 //        nav_Menu.findItem(R.id.nav_bar_setting_frag).setVisible(true);
 //        nav_Menu.findItem(R.id.nav_bar_logout_frag).setVisible(true);
         nav_Menu.findItem(R.id.nav_bar_login_frag).setVisible(false);
-        View navHeader = navigationView.inflateHeaderView(R.layout.nav_header_view);
-        navHeader.setVisibility(View.GONE);
+
     }
 
     @Override

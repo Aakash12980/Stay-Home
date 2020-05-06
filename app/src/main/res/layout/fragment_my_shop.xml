@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".fragments.MyShopFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -22,6 +23,8 @@
                 android:layout_width="160dp"
                 android:layout_height="128dp"
                 android:layout_marginTop="16dp"
+                app:civ_border_color="@android:color/white"
+                app:civ_border_width="8dp"
                 android:elevation="8dp"
                 android:outlineAmbientShadowColor="@android:color/darker_gray"
                 android:src="@drawable/pic"

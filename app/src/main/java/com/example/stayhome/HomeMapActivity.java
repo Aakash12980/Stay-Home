@@ -62,9 +62,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_map);
-
         initMap();
-
         gpsView = findViewById(R.id.home_gps);
     }
 
@@ -101,8 +99,8 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                         for (QueryDocumentSnapshot data : queryDocumentSnapshots) {
                             shop = data.toObject(ShopData.class);
                             Location loc = new Location("");
-                            loc.setLongitude(Double.valueOf(shop.getLatLng().get(1)));
                             loc.setLatitude(Double.valueOf(shop.getLatLng().get(0)));
+                            loc.setLongitude(Double.valueOf(shop.getLatLng().get(1)));
                             distance = deviceLoc.distanceTo(loc) / 1000;
                             if (distance < 20) {
                                 Log.d(TAG, "onDataChange: HOME MAP ACTIVITY. Distance from current location: " + distance);

@@ -73,7 +73,6 @@ public class SettingFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private FirebaseUser user;
     private ProgressBar progressBar;
-    private ListenerRegistration listenerRegistration;
 
     public SettingFragment() {
         // Required empty public constructor
@@ -160,7 +159,7 @@ public class SettingFragment extends Fragment {
         if (isNetworkAvailable()){
             progressBar = new ProgressBar(mContext);
             progressBar.setVisibility(View.VISIBLE);
-            listenerRegistration = documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                     if (documentSnapshot.exists()){
@@ -220,7 +219,6 @@ public class SettingFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        listenerRegistration.remove();
     }
 
     @Override

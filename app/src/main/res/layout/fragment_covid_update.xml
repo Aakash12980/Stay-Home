@@ -3,155 +3,184 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.CovidUpdateFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp">
+        android:layout_margin="8dp">
 
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="5dp"
-            android:layout_marginBottom="8dp"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:id="@+id/country_select">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Worldwide"
-                android:textSize="16sp"
-                android:id="@+id/country_name"/>
-            <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinner"/>
-        </LinearLayout>
+            android:layout_alignParentEnd="true"
+            android:id="@+id/country_select"
+            app:cardCornerRadius="8dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Worldwide"
+                    android:padding="8dp"
+                    android:textSize="16sp"
+                    android:id="@+id/country_name"/>
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:layout_toRightOf="@+id/country_name"
+                    android:layout_toEndOf="@+id/country_name"
+                    android:id="@+id/spinner"/>
+            </RelativeLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/country_select"
-            android:layout_marginTop="8dp"
-            android:id="@+id/total_case"
-            android:text="Total Confirmed"
-            android:textSize="20sp"
-            android:layout_centerHorizontal="true"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/total_case_number"
-            android:text="000"
-            android:textSize="20sp"
-            android:textColor="@android:color/black"
-            android:layout_below="@+id/total_case"
-            android:layout_centerHorizontal="true"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:id="@+id/total_deaths"
-            android:text="Total Deaths"
-            android:textSize="20sp"
-            android:layout_below="@+id/total_case_number"
-            android:layout_centerHorizontal="true"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/total_deaths_number"
-            android:text="000"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/quantum_googred"
-            android:layout_below="@+id/total_deaths"
-            android:layout_centerHorizontal="true"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:id="@+id/total_recovered"
-            android:text="Total Recovered"
-            android:textSize="20sp"
-            android:layout_below="@id/total_deaths_number"
-            android:layout_centerHorizontal="true"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/total_recovered_number"
-            android:text="000"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/quantum_googgreen"
-            android:layout_below="@+id/total_recovered"
-            android:layout_centerHorizontal="true"/>
+        </com.google.android.material.card.MaterialCardView>
 
-        <View
-            android:id="@+id/divider"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@+id/total_recovered_number"
-            android:layout_marginTop="8dp"
-            android:background="?android:attr/listDivider" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:id="@+id/card1"
+            android:layout_below="@+id/country_select"
+            app:cardCornerRadius="14dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/total_case"
+                    android:text="Total Confirmed"
+                    android:textSize="20sp"
+                    android:layout_centerHorizontal="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/total_case_number"
+                    android:text="000"
+                    android:textSize="20sp"
+                    android:textColor="@android:color/black"
+                    android:layout_below="@+id/total_case"
+                    android:layout_centerHorizontal="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/total_deaths"
+                    android:text="Total Deaths"
+                    android:textSize="20sp"
+                    android:layout_below="@+id/total_case_number"
+                    android:layout_centerHorizontal="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/total_deaths_number"
+                    android:text="000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/quantum_googred"
+                    android:layout_below="@+id/total_deaths"
+                    android:layout_centerHorizontal="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/total_recovered"
+                    android:text="Total Recovered"
+                    android:textSize="20sp"
+                    android:layout_below="@id/total_deaths_number"
+                    android:layout_centerHorizontal="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/total_recovered_number"
+                    android:text="000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/quantum_googgreen"
+                    android:layout_below="@+id/total_recovered"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="8dp"/>
+            </RelativeLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:id="@+id/new_case"
-            android:layout_below="@+id/divider"
-            android:text="New Cases"
-            android:textSize="20sp"
-            android:layout_centerHorizontal="true"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/new_case_number"
-            android:text="000"
-            android:textSize="20sp"
-            android:textColor="@android:color/black"
-            android:layout_below="@+id/new_case"
-            android:layout_centerHorizontal="true"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:id="@+id/new_deaths"
-            android:text="New Deaths"
-            android:textSize="20sp"
-            android:layout_below="@+id/new_case_number"
-            android:layout_centerHorizontal="true"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/new_deaths_number"
-            android:text="000"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/quantum_googred"
-            android:layout_below="@+id/new_deaths"
-            android:layout_centerHorizontal="true"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:id="@+id/new_recovered"
-            android:text="New Recovered"
-            android:textSize="20sp"
-            android:layout_below="@id/new_deaths_number"
-            android:layout_centerHorizontal="true"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/new_recovered_number"
-            android:text="000"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/quantum_googgreen"
-            android:layout_below="@+id/new_recovered"
-            android:layout_centerHorizontal="true"/>
+            android:id="@+id/card2"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/card1"
+            app:cardCornerRadius="14dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/new_case"
+                    android:text="New Cases"
+                    android:textSize="20sp"
+                    android:layout_centerHorizontal="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/new_case_number"
+                    android:text="000"
+                    android:textSize="20sp"
+                    android:textColor="@android:color/black"
+                    android:layout_below="@+id/new_case"
+                    android:layout_centerHorizontal="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/new_deaths"
+                    android:text="New Deaths"
+                    android:textSize="20sp"
+                    android:layout_below="@+id/new_case_number"
+                    android:layout_centerHorizontal="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/new_deaths_number"
+                    android:text="000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/quantum_googred"
+                    android:layout_below="@+id/new_deaths"
+                    android:layout_centerHorizontal="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/new_recovered"
+                    android:text="New Recovered"
+                    android:textSize="20sp"
+                    android:layout_below="@id/new_deaths_number"
+                    android:layout_centerHorizontal="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/new_recovered_number"
+                    android:text="000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/quantum_googgreen"
+                    android:layout_below="@+id/new_recovered"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="8dp"/>
+            </RelativeLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
 
 
     </RelativeLayout>
