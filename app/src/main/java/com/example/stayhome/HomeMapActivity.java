@@ -104,7 +104,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                             distance = deviceLoc.distanceTo(loc) / 1000;
                             if (distance < 20) {
                                 Log.d(TAG, "onDataChange: HOME MAP ACTIVITY. Distance from current location: " + distance);
-                                showLocation(loc.getLatitude(), loc.getLatitude(), shop.getShopName());
+                                showLocation(loc.getLatitude(), loc.getLongitude(), shop.getShopName());
                             }
                         }
 
@@ -124,18 +124,19 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
     private void showLocation(Double lat, Double lng, String shopName){
-        if (shopName.isEmpty()){
-            currentLat = lat;
-            currentLng = lng;
-            deviceLoc.setLatitude(lat);
-            deviceLoc.setLongitude(lng);
-            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), DEFAULT_ZOOM));
-            
-        }else {
-            gMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(lat, lng))
-                    .title(shopName));
-        }
+        LatLng latLng = new LatLng(lat, lng);
+        Log.d(TAG, "showLocation: print lat: "+ lat + " \nlng: "+ lng);
+        gMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title(shopName));
+    }
+
+    private void myLocation(Double lat, Double lng){
+        currentLat = lat;
+        currentLng = lng;
+        deviceLoc.setLatitude(lat);
+        deviceLoc.setLongitude(lng);
+        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), DEFAULT_ZOOM));
     }
     private void getCurrentLocation(){
         Log.d(TAG, "getDeviceLocation: getting current device location");
@@ -150,7 +151,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                             Log.d(TAG, "onComplete: found location");
                             Location currentLocation = (Location) task.getResult();
                             if (currentLocation != null){
-                                showLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), "");
+                                myLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
                             }else {
                                 Toast.makeText(HomeMapActivity.this, "Failed to find the location.", Toast.LENGTH_SHORT).show();
                             }

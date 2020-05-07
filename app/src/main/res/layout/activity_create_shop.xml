@@ -12,7 +12,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/create_shop_title"
-            android:text="Shop Details"
+            android:text="Workspace Details"
+            android:textColor="@android:color/black"
             android:textSize="20sp"
             android:textStyle="bold"
             android:padding="12dp"
@@ -34,7 +35,7 @@
                 android:inputType="text"
                 android:clickable="true"
                 android:focusable="false"
-                android:hint="Select Location of your shop"
+                android:hint="Select Location of your workspace"
                 android:paddingRight="8dp"
                 android:paddingLeft="8dp"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -53,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:hint="Shop Name"
+                android:hint="Workspace Name"
                 android:paddingRight="8dp"
                 android:paddingLeft="8dp"/>
 
@@ -74,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:hint="Type of shop"
+                android:hint="Type of workspace"
                 android:paddingRight="8dp"
                 android:paddingLeft="8dp"/>
 

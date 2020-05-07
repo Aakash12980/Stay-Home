@@ -12,7 +12,7 @@
             android:title="Covid-19 Updates"/>
         <item android:id="@+id/nav_bar_shop_frag"
             android:icon="@drawable/my_shop"
-            android:title="My shop"/>
+            android:title="My workspace"/>
         <item android:id="@+id/nav_bar_setting_frag"
             android:icon="@drawable/settings"
             android:title="Setting"/>

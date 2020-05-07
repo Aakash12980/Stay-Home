@@ -11,9 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/no_data_view"
-        android:text="Couldn't find any active shops."
+        android:text="Couldn't find any active workspace."
         android:textStyle="bold"
         android:textSize="16sp"
+        android:textColor="@android:color/white"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:visibility="invisible"/>
@@ -24,7 +25,7 @@
         android:paddingTop="14dp"
         android:paddingBottom="10dp"
         android:textColor="@android:color/white"
-        android:text="Nearby Shops"
+        android:text="Nearby Workspace"
         android:textSize="16sp"
         />
     <TextView
