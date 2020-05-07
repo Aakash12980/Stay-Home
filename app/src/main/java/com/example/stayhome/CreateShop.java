@@ -65,12 +65,7 @@ public class CreateShop extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MapAct.class);
-                intent.putExtra("name", name);
-                intent.putExtra("genre", genre);
-                intent.putExtra("contact", contact);
-                intent.putExtra("lat", lat);
-                intent.putExtra("lng", lng);
-                intent.putExtra("address", loc);
+                intent.putExtra("frag", "createShop");
                 startActivity(intent);
             }
         });
@@ -126,7 +121,7 @@ public class CreateShop extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 if (setDisplayName()){
-                                    Log.d(TAG, "onSuccess: Shop account create for this user.");
+                                    Log.d(TAG, "onSuccess: Shop account created for this user.");
                                     progressBar.setVisibility(View.INVISIBLE);
                                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                     finishAffinity();
@@ -150,8 +145,8 @@ public class CreateShop extends AppCompatActivity {
             Toast.makeText(this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
         }
         progressBar.setVisibility(View.INVISIBLE);
-
     }
+
     private boolean setDisplayName(){
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(name)
@@ -226,9 +221,6 @@ public class CreateShop extends AppCompatActivity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
     private void getExtras(){
-        name = getIntent().getStringExtra("name");
-        genre = getIntent().getStringExtra("genre");
-        contact = getIntent().getStringExtra("contact");
         loc = getIntent().getStringExtra("address");
         lat = getIntent().getStringExtra("lat");
         lng = getIntent().getStringExtra("lng");
@@ -237,9 +229,6 @@ public class CreateShop extends AppCompatActivity {
 
     }
     private void clearExtras(){
-        getIntent().removeExtra("name");
-        getIntent().removeExtra("genre");
-        getIntent().removeExtra("contact");
         getIntent().removeExtra("address");
         getIntent().removeExtra("lat");
         getIntent().removeExtra("lng");
@@ -248,7 +237,7 @@ public class CreateShop extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (getIntent().hasExtra("name")){
+        if (getIntent().hasExtra("address")){
             getExtras();
         }
         user = FirebaseAuth.getInstance().getCurrentUser();

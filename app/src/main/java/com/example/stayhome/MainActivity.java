@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.nav_fragment_container, new CovidUpdateFragment(), "stat_frag").addToBackStack("stat_frag").commit();
                 break;
             case R.id.nav_bar_shop_frag:
-                if (user.getDisplayName().length() >= 1){
+                if (user.getDisplayName() != null && user.getDisplayName().length() >= 1){
                     Log.d(TAG, "onNavigationItemSelected: DISPLAY NAME: "+ user.getDisplayName());
                     getSupportFragmentManager().beginTransaction().replace(R.id.nav_fragment_container, new MyShopFragment(), "shop_frag").addToBackStack("shop_frag").commit();
                 }else {
@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             final StorageReference storageReference = firebaseStorage.getReference("ProfilePic")
                     .child(user.getUid()).child("profile.jpg");
             documentReference = FirebaseFirestore.getInstance().collection("ShopInfo").document(user.getUid());
+            Log.d(TAG, "updateUI: DISPLAY NAME: "+ user.getDisplayName());
 
             if (isNetworkAvailable()){
                 DocumentReference documentReference = FirebaseFirestore.getInstance().collection("ShopData").document(user.getUid());
@@ -158,6 +159,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                         if (documentSnapshot.exists()){
+                            nameView = navHeader.findViewById(R.id.shop_prof_name);
+                            locView = navHeader.findViewById(R.id.shop_prof_loc);
+                            imgView = navHeader.findViewById(R.id.shop_prof_img);
                             Map<String, Object> shopData = documentSnapshot.getData();
                             locView.setText(shopData.get("shopLoc").toString());
                             nameView.setText(shopData.get("shopName").toString());
@@ -195,16 +199,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     {
         navigationView = (NavigationView) findViewById(R.id.nav_bar_home);
         Menu nav_Menu = (Menu) navigationView.getMenu();
-        if (user.getDisplayName().length() < 1){
+        if (user.getDisplayName() == null || user.getDisplayName().length() < 1){
             nav_Menu.findItem(R.id.nav_bar_setting_frag).setVisible(false);
             navHeader.setVisibility(View.GONE);
         }
-        if (user.getDisplayName().length() > 0){
-
+        if (user.getDisplayName() != null && user.getDisplayName().length() > 0){
+            navHeader.setVisibility(View.VISIBLE);
             nameView = navHeader.findViewById(R.id.shop_prof_name);
             locView = navHeader.findViewById(R.id.shop_prof_loc);
             imgView = navHeader.findViewById(R.id.shop_prof_img);
-            navHeader.setVisibility(View.VISIBLE);
         }else {
             navHeader.setVisibility(View.GONE);
         }

@@ -121,7 +121,7 @@ public class LoginFragment extends Fragment{
         }
 
         if (TextUtils.isEmpty(email)){
-            emailView.setError("Username field Empty!");
+            emailView.setError("Email field Empty!");
             return false;
         }else if (TextUtils.isEmpty(password)){
             passwordView.setError("Password field Empty!");

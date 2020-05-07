@@ -94,17 +94,9 @@ public class MapAct extends AppCompatActivity implements OnMapReadyCallback, Goo
             @Override
             public void onClick(View v) {
 
-                if (getIntent().hasExtra("name")){
+                if (getIntent().hasExtra("frag")){
                     clearExtras();
                     Intent intent = new Intent(getApplicationContext(), CreateShop.class);
-                    intent.putExtra("name", name);
-                    intent.putExtra("genre", genre);
-                    intent.putExtra("contact", contact);
-                    if (getIntent().hasExtra("address")){
-                        intent.putExtra("address", newAddress);
-                        intent.putExtra("lat", newLat);
-                        intent.putExtra("lng", newLng);
-                    }
                     startActivity(intent);
                     finish();
                 }else {
@@ -129,12 +121,9 @@ public class MapAct extends AppCompatActivity implements OnMapReadyCallback, Goo
                 newData.put("latLng", currentLatLng);
                 Log.d(TAG, "onClick: Current user location selected: "+ currentAddress);
                 if (isNetworkAvailable()){
-                    if (getIntent().hasExtra("name")){
+                    if (getIntent().hasExtra("frag")){
                         clearExtras();
                         Intent intent = new Intent(getApplicationContext(), CreateShop.class);
-                        intent.putExtra("name", name);
-                        intent.putExtra("genre", genre);
-                        intent.putExtra("contact", contact);
                         intent.putExtra("address", currentAddress);
                         intent.putExtra("lat", String.valueOf(currentLat));
                         intent.putExtra("lng", String.valueOf(currentLng));
@@ -351,32 +340,14 @@ public class MapAct extends AppCompatActivity implements OnMapReadyCallback, Goo
         }
     }
 
-    private void getExtras(){
-        name = getIntent().getStringExtra("name");
-        genre = getIntent().getStringExtra("genre");
-        contact = getIntent().getStringExtra("contact");
-        if(getIntent().hasExtra("address")){
-            newAddress = getIntent().getStringExtra("address");
-            newLat = getIntent().getStringExtra("lat");
-            newLng = getIntent().getStringExtra("lng");
-        }
 
-    }
     private void clearExtras(){
-        getIntent().removeExtra("name");
-        getIntent().removeExtra("genre");
-        getIntent().removeExtra("contact");
-        getIntent().removeExtra("address");
-        getIntent().removeExtra("lat");
-        getIntent().removeExtra("lng");
+        getIntent().removeExtra("frag");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (getIntent().hasExtra("name")){
-            getExtras();
-        }
         user = FirebaseAuth.getInstance().getCurrentUser();
         getLocationPermission();
         initMap();
