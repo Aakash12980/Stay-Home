@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final int TIME_INTERVAL = 2000;
     private long mBackPressed;
+    private View navHeader;
 
     private static final String TAG = "MAIN ACTIVITY";
     private FirebaseUser user;
@@ -75,12 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         navigationView = (NavigationView) findViewById(R.id.nav_bar_home);
-        if (user != null && user.getDisplayName() != null){
-            View headerView = (View) navigationView.getHeaderView(0);
-            nameView = headerView.findViewById(R.id.shop_prof_name);
-            locView = headerView.findViewById(R.id.shop_prof_loc);
-            imgView = headerView.findViewById(R.id.shop_prof_img);
-        }
+        navHeader = navigationView.inflateHeaderView(R.layout.nav_header_view);
 
 
         if (savedInstanceState == null){
@@ -99,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportFragmentManager().popBackStack("home_frag", 0);
 
         toolbar = findViewById(R.id.nav_toolbar);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.icon_color));
+        toolbar.setBackgroundColor(getResources().getColor(R.color.background));
         setSupportActionBar(toolbar);
 
         navigationView.setNavigationItemSelectedListener(this);
@@ -157,14 +153,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             documentReference = FirebaseFirestore.getInstance().collection("ShopInfo").document(user.getUid());
 
             if (isNetworkAvailable()){
+                DocumentReference documentReference = FirebaseFirestore.getInstance().collection("ShopData").document(user.getUid());
                 documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
                     @Override
                     public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                         if (documentSnapshot.exists()){
-                            View navHeader = navigationView.inflateHeaderView(R.layout.nav_header_view);
-                            navHeader.setVisibility(View.VISIBLE);
-                            Menu nav_Menu = (Menu) navigationView.getMenu();
-                            nav_Menu.findItem(R.id.nav_bar_setting_frag).setVisible(true);
                             Map<String, Object> shopData = documentSnapshot.getData();
                             locView.setText(shopData.get("shopLoc").toString());
                             nameView.setText(shopData.get("shopName").toString());
@@ -196,7 +189,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nav_Menu.findItem(R.id.nav_bar_setting_frag).setVisible(false);
         nav_Menu.findItem(R.id.nav_bar_logout_frag).setVisible(false);
         nav_Menu.findItem(R.id.nav_bar_shop_frag).setVisible(false);
-        View navHeader = navigationView.inflateHeaderView(R.layout.nav_header_view);
         navHeader.setVisibility(View.GONE);
     }
     private void unHideItem()
@@ -205,17 +197,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Menu nav_Menu = (Menu) navigationView.getMenu();
         if (user.getDisplayName().length() < 1){
             nav_Menu.findItem(R.id.nav_bar_setting_frag).setVisible(false);
+            navHeader.setVisibility(View.GONE);
         }
         if (user.getDisplayName().length() > 0){
-            View navHeader = navigationView.inflateHeaderView(R.layout.nav_header_view);
+
+            nameView = navHeader.findViewById(R.id.shop_prof_name);
+            locView = navHeader.findViewById(R.id.shop_prof_loc);
+            imgView = navHeader.findViewById(R.id.shop_prof_img);
             navHeader.setVisibility(View.VISIBLE);
         }else {
-            View navHeader = navigationView.inflateHeaderView(R.layout.nav_header_view);
             navHeader.setVisibility(View.GONE);
         }
 
-//        nav_Menu.findItem(R.id.nav_bar_setting_frag).setVisible(true);
-//        nav_Menu.findItem(R.id.nav_bar_logout_frag).setVisible(true);
         nav_Menu.findItem(R.id.nav_bar_login_frag).setVisible(false);
 
     }

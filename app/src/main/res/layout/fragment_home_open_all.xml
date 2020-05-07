@@ -23,6 +23,7 @@
         android:id="@+id/nearby_shop_txt"
         android:paddingTop="14dp"
         android:paddingBottom="10dp"
+        android:textColor="@android:color/white"
         android:text="Nearby Shops"
         android:textSize="16sp"
         />
@@ -36,7 +37,7 @@
         android:paddingTop="14dp"
         android:paddingBottom="10dp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:id="@+id/view_in_map"/>
     <View
         android:id="@+id/divider"

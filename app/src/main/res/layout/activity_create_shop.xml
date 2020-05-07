@@ -20,8 +20,29 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/create_shop_name"
+            android:id="@+id/create_location"
             android:layout_below="@+id/create_shop_title"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/box_color"
+            android:background="@drawable/input_box_border">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:clickable="true"
+                android:focusable="false"
+                android:hint="Select Location of your shop"
+                android:paddingRight="8dp"
+                android:paddingLeft="8dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/create_shop_name"
+            android:layout_below="@+id/create_location"
             android:layout_centerHorizontal="true"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_marginBottom="10dp"
@@ -59,32 +80,12 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/create_location"
-            android:layout_below="@+id/create_genre"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/box_color"
-            android:background="@drawable/input_box_border">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:clickable="true"
-                android:focusable="false"
-                android:hint="Select Location of your shop"
-                android:paddingRight="8dp"
-                android:paddingLeft="8dp"/>
-        </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/create_contact"
-            android:layout_below="@+id/create_location"
+            android:layout_below="@+id/create_genre"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:backgroundTint="@color/box_color"
             android:background="@drawable/input_box_border"

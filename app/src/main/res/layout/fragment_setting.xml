@@ -81,8 +81,9 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:text="Name"
+                        android:ellipsize="end"
+                        android:singleLine="true"
                         android:textStyle="bold"
-                        android:inputType="textCapWords"
                         android:textColor="@android:color/black"
                         android:padding="8dp"
                         android:id="@+id/setting_name_shop"/>
@@ -114,7 +115,8 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:text="Genre"
-                        android:inputType="textCapWords"
+                        android:ellipsize="end"
+                        android:singleLine="true"
                         android:textStyle="bold"
                         android:textColor="@android:color/black"
                         android:padding="8dp"
@@ -135,7 +137,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Change Phone Number"
+                        android:text="Change Contact"
                         android:textColor="@android:color/black"
                         android:padding="8dp" />
 
@@ -176,6 +178,8 @@
                         android:gravity="end"
                         android:text="Not Set"
                         android:textStyle="bold"
+                        android:ellipsize="end"
+                        android:singleLine="true"
                         android:textColor="@android:color/black"
                         android:padding="8dp"
                         android:id="@+id/setting_email_shop"/>
@@ -189,6 +193,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Change Password"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
                     android:id="@+id/setting_password"
@@ -221,7 +227,6 @@
                         android:gravity="end"
                         android:text="Not Set"
                         android:textStyle="bold"
-                        android:inputType="textCapWords"
                         android:textColor="@android:color/black"
                         android:padding="8dp"
                         android:id="@+id/setting_location_shop"/>

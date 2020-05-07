@@ -148,7 +148,6 @@ public class HomeOpen extends Fragment {
         }else {
             Toast.makeText(mContext, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private boolean isNetworkAvailable() {

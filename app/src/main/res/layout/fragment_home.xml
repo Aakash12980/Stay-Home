@@ -19,6 +19,8 @@
         android:id="@+id/home_btm_nav_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/background"
+        app:itemIconTint="@android:color/white"
         android:layout_alignParentBottom="true"
         app:menu="@menu/btm_nav_bar_menu"/>
 

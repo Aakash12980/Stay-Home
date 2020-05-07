@@ -7,7 +7,7 @@
     android:layout_height="176dp"
     android:gravity="bottom"
     android:id="@+id/nav_header"
-    android:background="@android:color/holo_blue_light">
+    android:background="@color/background">
 
     <TextView
         android:id="@+id/shop_prof_name"
@@ -16,10 +16,10 @@
         android:layout_above="@+id/shop_prof_loc"
         android:layout_marginBottom="44dp"
         android:paddingRight="8dp"
+        android:paddingEnd="8dp"
         android:layout_toRightOf="@+id/shop_prof_img"
         android:text="Not Set"
-        android:inputType="textCapWords"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,8 +34,8 @@
         android:layout_centerHorizontal="true"
         android:layout_toRightOf="@+id/shop_prof_img"
         android:text="Not Set"
-        android:inputType="textCapWords"
         android:textSize="14sp"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/shop_prof_name"
         app:layout_constraintTop_toBottomOf="@+id/shop_prof_name"
@@ -46,6 +46,8 @@
         android:layout_width="95dp"
         android:layout_height="74dp"
         android:src="@drawable/pic"
+        app:civ_border_width="4dp"
+        app:civ_border_color="@android:color/white"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
