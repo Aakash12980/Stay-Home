@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int TIME_INTERVAL = 2000;
     private long mBackPressed;
     private View navHeader;
+    private Menu nav_menu;
 
     private static final String TAG = "MAIN ACTIVITY";
     private FirebaseUser user;
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView = (NavigationView) findViewById(R.id.nav_bar_home);
         navHeader = navigationView.inflateHeaderView(R.layout.nav_header_view);
+        nav_menu = (Menu) navigationView.getMenu();
 
 
         if (savedInstanceState == null){
@@ -118,8 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.nav_fragment_container, new CovidUpdateFragment(), "stat_frag").addToBackStack("stat_frag").commit();
                 break;
             case R.id.nav_bar_shop_frag:
-                if (user.getDisplayName() != null && user.getDisplayName().length() >= 1){
-                    Log.d(TAG, "onNavigationItemSelected: DISPLAY NAME: "+ user.getDisplayName());
+                if (nav_menu.findItem(R.id.nav_bar_setting_frag).isVisible()){
                     getSupportFragmentManager().beginTransaction().replace(R.id.nav_fragment_container, new MyShopFragment(), "shop_frag").addToBackStack("shop_frag").commit();
                 }else {
                     navigationView.getMenu().getItem(0).setChecked(true);
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (user == null){
             hideItem();
         }else {
-            unHideItem();
+//            unHideItem();
             final StorageReference storageReference = firebaseStorage.getReference("ProfilePic")
                     .child(user.getUid()).child("profile.jpg");
             documentReference = FirebaseFirestore.getInstance().collection("ShopInfo").document(user.getUid());
@@ -159,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                         if (documentSnapshot.exists()){
+                            nav_menu.findItem(R.id.nav_bar_login_frag).setVisible(false);
                             nameView = navHeader.findViewById(R.id.shop_prof_name);
                             locView = navHeader.findViewById(R.id.shop_prof_loc);
                             imgView = navHeader.findViewById(R.id.shop_prof_img);
@@ -177,6 +179,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 }
                             });
                         }else {
+                            nav_menu.findItem(R.id.nav_bar_setting_frag).setVisible(false);
+                            navHeader.setVisibility(View.GONE);
+                            nav_menu.findItem(R.id.nav_bar_login_frag).setVisible(false);
                             Log.d(TAG, "onEvent: No shop data available. ");
                         }
                     }
@@ -195,31 +200,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nav_Menu.findItem(R.id.nav_bar_shop_frag).setVisible(false);
         navHeader.setVisibility(View.GONE);
     }
-    private void unHideItem()
-    {
-        navigationView = (NavigationView) findViewById(R.id.nav_bar_home);
-        Menu nav_Menu = (Menu) navigationView.getMenu();
-        if (user.getDisplayName() == null || user.getDisplayName().length() < 1){
-            nav_Menu.findItem(R.id.nav_bar_setting_frag).setVisible(false);
-            navHeader.setVisibility(View.GONE);
-        }
-        if (user.getDisplayName() != null && user.getDisplayName().length() > 0){
-            navHeader.setVisibility(View.VISIBLE);
-            nameView = navHeader.findViewById(R.id.shop_prof_name);
-            locView = navHeader.findViewById(R.id.shop_prof_loc);
-            imgView = navHeader.findViewById(R.id.shop_prof_img);
-        }else {
-            navHeader.setVisibility(View.GONE);
-        }
-
-        nav_Menu.findItem(R.id.nav_bar_login_frag).setVisible(false);
-
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     @Override

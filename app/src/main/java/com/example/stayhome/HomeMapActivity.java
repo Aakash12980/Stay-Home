@@ -152,6 +152,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                             Location currentLocation = (Location) task.getResult();
                             if (currentLocation != null){
                                 myLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
+                                Log.d(TAG, "onDataChange: Distance: "+ deviceLoc.getLatitude() +" " +deviceLoc.getLongitude());
                             }else {
                                 Toast.makeText(HomeMapActivity.this, "Failed to find the location.", Toast.LENGTH_SHORT).show();
                             }

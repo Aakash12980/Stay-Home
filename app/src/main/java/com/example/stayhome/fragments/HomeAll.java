@@ -29,8 +29,10 @@ import com.example.stayhome.adpaters.OpenAllShopListAdapter;
 import com.example.stayhome.data.ShopData;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -95,7 +97,7 @@ public class HomeAll extends Fragment {
     }
     private void updateUI(){
         showMap.setVisibility(View.GONE);
-        title.setText("Nearby Shops");
+        title.setText("Nearby Workspace");
         query = FirebaseFirestore.getInstance().collection("ShopData");
         if (isNetworkAvailable()){
             ProgressBar progressBar = new ProgressBar(getContext());
@@ -105,7 +107,7 @@ public class HomeAll extends Fragment {
                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                     if (queryDocumentSnapshots.isEmpty()){
                         noData.setVisibility(View.VISIBLE);
-                        Log.d(TAG, "onSuccess: No shops were found.");
+                        Log.d(TAG, "onSuccess: No workspace were found.");
                     }else {
                         noData.setVisibility(View.GONE);
                         for (QueryDocumentSnapshot data: queryDocumentSnapshots){
@@ -154,7 +156,8 @@ public class HomeAll extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        getDeviceLocation();
+        getLocationPermission();
+        getCurrentLocation();
         updateUI();
     }
 
@@ -206,22 +209,29 @@ public class HomeAll extends Fragment {
             ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
-
-    private void getDeviceLocation(){
+    private void getCurrentLocation(){
         Log.d(TAG, "getDeviceLocation: getting current device location");
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
         try {
             if (locationPermissionGranted){
-                fusedLocationProviderClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                Task location = fusedLocationProviderClient.getLastLocation();
+                location.addOnCompleteListener(new OnCompleteListener() {
                     @Override
-                    public void onSuccess(Location location) {
-                        if (location != null){
-                            Log.d(TAG, "onSuccess: Device is located Successfully.");
-                            deviceLoc.setLatitude(location.getLatitude());
-                            deviceLoc.setLongitude(location.getLongitude());
-                        }else {
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()){
+                            Log.d(TAG, "onComplete: found location");
+                            Location currentLocation = (Location) task.getResult();
+                            if (currentLocation != null){
+                                Log.d(TAG, "onDataChange: Distance: "+ deviceLoc.getLatitude() +" " +deviceLoc.getLongitude());
+                                deviceLoc.setLatitude(currentLocation.getLatitude());
+                                deviceLoc.setLongitude(currentLocation.getLongitude());
+                            }else {
+                                getLocationPermission();
+                            }
+
+                        }else{
                             Log.d(TAG, "onComplete: Current location is null");
-                            getLocationPermission();
+                            Log.d(TAG, "onComplete: Current location is null");
                         }
                     }
                 });
@@ -229,5 +239,6 @@ public class HomeAll extends Fragment {
         }catch(SecurityException e ){
             Log.e(TAG, "getDeviceLocation: SecurityException: "+ e.getMessage() );
         }
+
     }
 }

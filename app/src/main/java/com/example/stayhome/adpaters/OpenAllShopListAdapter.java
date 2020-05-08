@@ -84,7 +84,7 @@ public class OpenAllShopListAdapter extends RecyclerView.Adapter<OpenAllShopList
 
                 if (shop.getDistance() < 0){
                     holder.distView.setVisibility(View.VISIBLE);
-                    holder.distView.setText(meterToMile(shop.getDistance()) + " mil.");
+                    holder.distView.setText(String.valueOf(meterToMile(shop.getDistance())) + R.string.mile);
                 }else {
                     holder.distView.setVisibility(View.INVISIBLE);
                 }

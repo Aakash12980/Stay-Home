@@ -48,7 +48,7 @@ public class CreateShop extends AppCompatActivity {
     private ProgressBar progressBar;
     public static final String TAG = "CREATE SHOP";
     private DocumentReference documentReference;
-    private boolean flag = true;
+//    private boolean flag = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +60,7 @@ public class CreateShop extends AppCompatActivity {
         shopLoc = findViewById(R.id.create_location);
         shopContact = findViewById(R.id.create_contact);
         MaterialButton createBtn = findViewById(R.id.create_button);
+        progressBar = findViewById(R.id.create_shop_progress_bar);
 
         shopLoc.getEditText().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,7 +109,6 @@ public class CreateShop extends AppCompatActivity {
         shopData.setUid(user.getUid());
         documentReference = firestore.collection("ShopData").document(user.getUid());
         if (isNetworkAvailable()){
-            progressBar = new ProgressBar(getApplicationContext());
             progressBar.setVisibility(View.VISIBLE);
             documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
@@ -120,12 +120,10 @@ public class CreateShop extends AppCompatActivity {
                         documentReference.set(shopData).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                if (setDisplayName()){
-                                    Log.d(TAG, "onSuccess: Shop account created for this user.");
-                                    progressBar.setVisibility(View.INVISIBLE);
-                                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                                    finishAffinity();
-                                }
+                                Log.d(TAG, "onSuccess: Shop account created for this user.");
+                                progressBar.setVisibility(View.INVISIBLE);
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                finishAffinity();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -147,37 +145,37 @@ public class CreateShop extends AppCompatActivity {
         progressBar.setVisibility(View.INVISIBLE);
     }
 
-    private boolean setDisplayName(){
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName(name)
-                .build();
-
-        if (isNetworkAvailable()){
-            user.updateProfile(profileUpdates)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d(TAG, "Display name is updated for "+ name);
-                            }else {
-                                flag = false;
-                                documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Toast.makeText(CreateShop.this, "Failed to create shop account. Please try again later.", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                Log.d(TAG, "onComplete: Failed to set display name.");
-                            }
-                        }
-                    });
-
-        }else {
-            flag = false;
-            Toast.makeText(this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
-        }
-        return flag;
-    }
+//    private boolean setDisplayName(){
+//        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+//                .setDisplayName(name)
+//                .build();
+//
+//        if (isNetworkAvailable()){
+//            user.updateProfile(profileUpdates)
+//                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Void> task) {
+//                            if (task.isSuccessful()) {
+//                                Log.d(TAG, "Display name is updated for "+ name);
+//                            }else {
+//                                flag = false;
+//                                documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                    @Override
+//                                    public void onSuccess(Void aVoid) {
+//                                        Toast.makeText(CreateShop.this, "Failed to create shop account. Please try again later.", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                });
+//                                Log.d(TAG, "onComplete: Failed to set display name.");
+//                            }
+//                        }
+//                    });
+//
+//        }else {
+//            flag = false;
+//            Toast.makeText(this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
+//        }
+//        return flag;
+//    }
     private boolean validateInputs(){
         try {
             name = shopName.getEditText().getText().toString().trim().toLowerCase();
@@ -241,5 +239,12 @@ public class CreateShop extends AppCompatActivity {
             getExtras();
         }
         user = FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        finishAffinity();
     }
 }

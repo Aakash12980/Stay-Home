@@ -64,6 +64,7 @@ public class SignupFragment extends Fragment {
         password1View = (TextInputLayout) rootView.findViewById(R.id.signup_password1);
         password2View = (TextInputLayout) rootView.findViewById(R.id.signup_password2);
         MaterialButton btn = (MaterialButton) rootView.findViewById(R.id.signup_button);
+        progressBar = rootView.findViewById(R.id.signup_progress_bar);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +76,6 @@ public class SignupFragment extends Fragment {
                 }else {
                     password2View.setError("Confirm your Password!");
                 }
-
             }
         });
         return rootView;
@@ -83,7 +83,6 @@ public class SignupFragment extends Fragment {
 
     private void createUser(){
         if (isNetworkAvailable()){
-            progressBar = new ProgressBar(getContext());
             progressBar.setVisibility(View.VISIBLE);
 
             firebaseAuth.createUserWithEmailAndPassword(email, pwd1).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
@@ -107,8 +106,6 @@ public class SignupFragment extends Fragment {
 
     private void signIn(){
         if (isNetworkAvailable()){
-            progressBar = new ProgressBar(getContext());
-            progressBar.setVisibility(View.VISIBLE);
             firebaseAuth.signInWithEmailAndPassword(email, pwd1).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {

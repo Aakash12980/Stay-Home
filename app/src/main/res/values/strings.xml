@@ -8,5 +8,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="PREF_NAME">com.example.stayhome.userdata</string>
     <string name="API_KEY">AIzaSyDKJq_hnF5ssEODAiJ-3PYstbfU7UHBJko</string>
+    <string name="mile"> mil.</string>
 
 </resources>

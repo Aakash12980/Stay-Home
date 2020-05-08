@@ -114,5 +114,12 @@
             android:layout_marginTop="10dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
+        <ProgressBar
+            android:id="@+id/create_shop_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
     </RelativeLayout>
 </ScrollView>

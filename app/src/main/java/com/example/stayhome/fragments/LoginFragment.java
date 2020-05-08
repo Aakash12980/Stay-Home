@@ -64,6 +64,7 @@ public class LoginFragment extends Fragment{
         passwordView = (TextInputLayout) rootView.findViewById(R.id.login_password);
         loginBtn = (MaterialButton) rootView.findViewById(R.id.login_button);
         TextView forgotPasswordView = (TextView) rootView.findViewById(R.id.forgot_password);
+        progressBar = rootView.findViewById(R.id.login_progress_bar);
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +87,6 @@ public class LoginFragment extends Fragment{
     private void signIn(){
 
         if (isNetworkAvailable()){
-            progressBar = new ProgressBar(getContext());
             progressBar.setVisibility(View.VISIBLE);
             firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                 @Override

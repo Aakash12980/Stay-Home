@@ -34,8 +34,10 @@ import com.example.stayhome.adpaters.OpenAllShopListAdapter;
 import com.example.stayhome.data.ShopData;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -106,7 +108,7 @@ public class HomeOpen extends Fragment {
         return rootView;
     }
     private void updateUI(){
-        title.setText("Currently Opened Shops");
+        title.setText("Currently Opened workspaces");
         Query queryDocumentSnapshot = FirebaseFirestore.getInstance().collection("ShopData")
                 .whereEqualTo("active", true);
         if (isNetworkAvailable()){
@@ -118,16 +120,18 @@ public class HomeOpen extends Fragment {
                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                     if (queryDocumentSnapshots.isEmpty()){
                         noData.setVisibility(View.VISIBLE);
-                        Log.d(TAG, "onSuccess: No active shops were found.");
+                        Log.d(TAG, "onSuccess: No active workspace were found.");
                     }else {
                         noData.setVisibility(View.GONE);
                         for (QueryDocumentSnapshot data: queryDocumentSnapshots){
                             shop = data.toObject(ShopData.class);
                             Location loc = new Location("");
-                            loc.setLongitude(Double.valueOf(shop.getLatLng().get(1)));
                             loc.setLatitude(Double.valueOf(shop.getLatLng().get(0)));
-                            distance = deviceLoc.distanceTo(loc)/1000;
-                            if (distance < 20000){
+                            loc.setLongitude(Double.valueOf(shop.getLatLng().get(1)));
+                            Log.d(TAG, "onDataChange: Distance: "+ deviceLoc.getLatitude() +" " +deviceLoc.getLongitude());
+                            distance = deviceLoc.distanceTo(loc) / 1000;
+                            Log.d(TAG, "onDataChange: Distance: "+ distance);
+                            if (distance < 20){
                                 shop.setDistance(distance);
                                 Log.d(TAG, "onDataChange: Distance: "+ distance);
                                 shopData.add(shop);
@@ -167,7 +171,6 @@ public class HomeOpen extends Fragment {
         {
             menuItem.setChecked(true);
         }
-        getDeviceLocation();
     }
 
 
@@ -192,21 +195,29 @@ public class HomeOpen extends Fragment {
         }
     }
 
-    private void getDeviceLocation(){
+    private void getCurrentLocation(){
         Log.d(TAG, "getDeviceLocation: getting current device location");
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
         try {
             if (locationPermissionGranted){
-                fusedLocationProviderClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                Task location = fusedLocationProviderClient.getLastLocation();
+                location.addOnCompleteListener(new OnCompleteListener() {
                     @Override
-                    public void onSuccess(Location location) {
-                        if (location != null){
-                            Log.d(TAG, "onSuccess: Device is located Successfully.");
-                            deviceLoc.setLatitude(location.getLatitude());
-                            deviceLoc.setLongitude(location.getLongitude());
-                        }else {
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()){
+                            Log.d(TAG, "onComplete: found location");
+                            Location currentLocation = (Location) task.getResult();
+                            if (currentLocation != null){
+                                Log.d(TAG, "onDataChange: Distance: "+ deviceLoc.getLatitude() +" " +deviceLoc.getLongitude());
+                                deviceLoc.setLatitude(currentLocation.getLatitude());
+                                deviceLoc.setLongitude(currentLocation.getLongitude());
+                            }else {
+                                getLocationPermission();
+                            }
+
+                        }else{
                             Log.d(TAG, "onComplete: Current location is null");
-                            getLocationPermission();
+                            Log.d(TAG, "onComplete: Current location is null");
                         }
                     }
                 });
@@ -214,6 +225,7 @@ public class HomeOpen extends Fragment {
         }catch(SecurityException e ){
             Log.e(TAG, "getDeviceLocation: SecurityException: "+ e.getMessage() );
         }
+
     }
 
     @Override
@@ -226,6 +238,8 @@ public class HomeOpen extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        getLocationPermission();
+        getCurrentLocation();
         updateUI();
     }
 
