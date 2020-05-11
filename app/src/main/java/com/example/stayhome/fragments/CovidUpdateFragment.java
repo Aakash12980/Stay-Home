@@ -50,8 +50,6 @@ public class CovidUpdateFragment extends Fragment {
     private TextView countryName;
     private String country;
 
-
-
     public CovidUpdateFragment() {
         // Required empty public constructor
     }
@@ -68,7 +66,7 @@ public class CovidUpdateFragment extends Fragment {
         newConfirmed = rootView.findViewById(R.id.new_case_number);
         newDeaths = rootView.findViewById(R.id.new_deaths_number);
         newRecovered = rootView.findViewById(R.id.new_recovered_number);
-        View countrySelect = rootView.findViewById(R.id.country_select);
+        View countrySelect = rootView.findViewById(R.id.country_list_select);
         countryName = rootView.findViewById(R.id.country_name);
 
         try {

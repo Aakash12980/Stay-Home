@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -11,24 +12,24 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.stayhome.data.ShopData;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CreateShop extends AppCompatActivity {
@@ -48,6 +49,10 @@ public class CreateShop extends AppCompatActivity {
     private ProgressBar progressBar;
     public static final String TAG = "CREATE SHOP";
     private DocumentReference documentReference;
+    private String genreString;
+    private int itemChecked;
+    private String[] items = new String[] {"Banks", "Shops", "Hospitals", "Pharmacy", "Clinics", "Government Offices",
+            "Private Companies", "Schools/Colleges", "Petrol/Diesel Pumps", "Home Businesses", "Industries"};
 //    private boolean flag = true;
 
     @Override
@@ -71,6 +76,13 @@ public class CreateShop extends AppCompatActivity {
             }
         });
 
+        shopGenre.getEditText().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +92,36 @@ public class CreateShop extends AppCompatActivity {
             }
         });
 
+    }
+    private void showDialog(){
+        Arrays.sort(items);
+        try {
+            itemChecked = Arrays.asList(items).indexOf(genreString);
+        }catch (Exception e){
+            itemChecked = 0;
+        }
+        MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(this)
+                .setTitle("Select Genre")
+                .setSingleChoiceItems(items, itemChecked, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "onClick: item clicked. "+ items[which]);
+                        itemChecked = which;
+                    }
+                }).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        shopGenre.getEditText().setText(items[itemChecked]);
+                        genreString = items[itemChecked];
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        dialogBuilder.show();
     }
 
     @Override
@@ -208,6 +250,9 @@ public class CreateShop extends AppCompatActivity {
             return false;
         }else if (TextUtils.isEmpty(contact)){
             shopContact.setError("This field is required.");
+            return false;
+        }else if (contact.length() < 9 || contact.length() > 10){
+            shopContact.setError("Please enter valid phone number.");
             return false;
         }
         return true;

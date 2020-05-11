@@ -50,7 +50,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     private GoogleMap gMap;
     private FusedLocationProviderClient fusedLocationProviderClient;
-    private Marker startMarker;
     private double currentLat, currentLng;
 
     private float distance;
@@ -84,7 +83,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 getCurrentLocation();
             }
         });
-        query = FirebaseFirestore.getInstance().collection("ShopData").whereEqualTo("active", true);
+        query = FirebaseFirestore.getInstance().collection("ShopData").whereEqualTo("shopGenre", getIntent().getStringExtra("genre"));
         if (isNetworkAvailable()){
             ProgressBar progressBar = new ProgressBar(getApplicationContext());
             progressBar.setVisibility(View.VISIBLE);
@@ -93,7 +92,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 @Override
                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                     if (queryDocumentSnapshots.isEmpty()){
-                        Toast.makeText(HomeMapActivity.this, "No active shops were found.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HomeMapActivity.this, "No active " + getIntent().getStringExtra("genre") + " were found.", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "onSuccess: No active shops were found.");
                     }else {
                         for (QueryDocumentSnapshot data : queryDocumentSnapshots) {
@@ -101,7 +100,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                             Location loc = new Location("");
                             loc.setLatitude(Double.valueOf(shop.getLatLng().get(0)));
                             loc.setLongitude(Double.valueOf(shop.getLatLng().get(1)));
-                            distance = deviceLoc.distanceTo(loc) / 1000;
+                            distance = deviceLoc.distanceTo(loc) / 1000000;
                             if (distance < 20) {
                                 Log.d(TAG, "onDataChange: HOME MAP ACTIVITY. Distance from current location: " + distance);
                                 showLocation(loc.getLatitude(), loc.getLongitude(), shop.getShopName());
@@ -128,7 +127,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         Log.d(TAG, "showLocation: print lat: "+ lat + " \nlng: "+ lng);
         gMap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .title(shopName));
+                .title(shopName)).showInfoWindow();
     }
 
     private void myLocation(Double lat, Double lng){

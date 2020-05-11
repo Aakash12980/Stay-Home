@@ -2,6 +2,7 @@ package com.example.stayhome.fragments;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,13 +35,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -71,6 +77,11 @@ public class HomeAll extends Fragment {
     private ShopData shop;
     private TextView showMap;
     private Query query;
+    private EditText genreView;
+    private String genreString;
+    private int itemChecked;
+    private String[] items = new String[] {"Banks", "Shops", "Hospitals", "Pharmacy", "Clinics", "Government Offices",
+            "Private Companies", "Schools/Colleges", "Petrol/Diesel Pumps", "Home Businesses", "Industries"};
 
 
     private OnFragmentInteractionListener mListener;
@@ -78,7 +89,6 @@ public class HomeAll extends Fragment {
     public HomeAll() {
         // Required empty public constructor
     }
-    
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,17 +98,54 @@ public class HomeAll extends Fragment {
         recyclerView = rootView.findViewById(R.id.open_shop_list);
         showMap = rootView.findViewById(R.id.view_in_map);
         noData = rootView.findViewById(R.id.no_data_view);
+        genreView = rootView.findViewById(R.id.genre_type);
+        genreString = genreView.getText().toString();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new OpenAllShopListAdapter(getContext(), shopData);
         recyclerView.setAdapter(adapter);
 
+        genreView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+
         return rootView;
+    }
+    private void showDialog(){
+        Arrays.sort(items);
+        itemChecked = Arrays.asList(items).indexOf(genreString);
+        MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(getActivity())
+                .setTitle("Select Genre")
+                .setSingleChoiceItems(items, itemChecked, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "onClick: item clicked. "+ items[which]);
+                        itemChecked = which;
+                    }
+                }).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        genreView.setText(items[itemChecked]);
+                        genreString = items[itemChecked];
+                        updateUI();
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        dialogBuilder.show();
     }
     private void updateUI(){
         showMap.setVisibility(View.GONE);
-        title.setText("Nearby Workspace");
-        query = FirebaseFirestore.getInstance().collection("ShopData");
+        title.setText("Nearby ");
+        Log.d(TAG, "updateUI: value of genreSTRING: "+ genreString);
+        query = FirebaseFirestore.getInstance().collection("ShopData").whereEqualTo("shopGenre", genreString);;
         if (isNetworkAvailable()){
             ProgressBar progressBar = new ProgressBar(getContext());
             progressBar.setVisibility(View.VISIBLE);
@@ -107,9 +154,13 @@ public class HomeAll extends Fragment {
                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                     if (queryDocumentSnapshots.isEmpty()){
                         noData.setVisibility(View.VISIBLE);
-                        Log.d(TAG, "onSuccess: No workspace were found.");
+                        noData.setText("Couldn't find any "+ genreString);
+                        Log.d(TAG, "onSuccess: No "+ genreString +" were found.");
                     }else {
                         noData.setVisibility(View.GONE);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+                        Date date = new Date();
+                        String currentDate = dateFormat.format(date);
                         for (QueryDocumentSnapshot data: queryDocumentSnapshots){
                             shop = data.toObject(ShopData.class);
                             Location loc = new Location("");
@@ -117,9 +168,14 @@ public class HomeAll extends Fragment {
                             loc.setLatitude(Double.valueOf(shop.getLatLng().get(0)));
                             distance = deviceLoc.distanceTo(loc)/1000;
                             if (distance < 20000){
-                                shop.setDistance(distance);
-                                Log.d(TAG, "onDataChange: Distance: "+ distance);
-                                shopData.add(shop);
+                                String openTime = shop.getOpenTime();
+                                String closeTime = shop.getCloseTime();
+                                if (currentDate.compareTo(openTime) >= 0 && currentDate.compareTo(closeTime) <= 0){
+                                    shop.setDistance(distance);
+                                    shop.setActive(true);
+                                    Log.d(TAG, "onDataChange: Distance: "+ distance);
+                                    shopData.add(shop);
+                                }
                             }
                         }
                         adapter.setItems(shopData);
@@ -176,7 +232,6 @@ public class HomeAll extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d(TAG, "onDetact: This is onDetach method.");
         mListener = null;
     }
 

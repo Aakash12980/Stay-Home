@@ -83,7 +83,6 @@
                         android:text="Name"
                         android:ellipsize="end"
                         android:singleLine="true"
-                        android:textStyle="bold"
                         android:textColor="@android:color/black"
                         android:padding="8dp"
                         android:id="@+id/setting_name_shop"/>
@@ -117,7 +116,6 @@
                         android:text="Genre"
                         android:ellipsize="end"
                         android:singleLine="true"
-                        android:textStyle="bold"
                         android:textColor="@android:color/black"
                         android:padding="8dp"
                         android:id="@+id/setting_genre_shop"/>
@@ -146,8 +144,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="end"
-                        android:text="9812345670"
-                        android:textStyle="bold"
+                        android:text="Not set"
                         android:textColor="@android:color/black"
                         android:padding="8dp"
                         android:id="@+id/setting_contact_shop"/>
@@ -177,7 +174,6 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:text="Not Set"
-                        android:textStyle="bold"
                         android:ellipsize="end"
                         android:singleLine="true"
                         android:textColor="@android:color/black"
@@ -226,7 +222,6 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:text="Not Set"
-                        android:textStyle="bold"
                         android:textColor="@android:color/black"
                         android:padding="8dp"
                         android:id="@+id/setting_location_shop"/>

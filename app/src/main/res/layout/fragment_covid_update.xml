@@ -20,7 +20,8 @@
             app:cardCornerRadius="8dp">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:id="@+id/country_list_select">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

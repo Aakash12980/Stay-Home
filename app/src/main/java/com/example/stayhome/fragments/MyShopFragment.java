@@ -1,5 +1,6 @@
 package com.example.stayhome.fragments;
 
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -16,8 +17,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -41,6 +44,9 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,15 +66,21 @@ public class MyShopFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private CircleImageView imgCard;
-    private TextView name;
-    private TextView loc;
+    private EditText name;
+    private EditText loc;
     private TextView phone;
-    private TextView genre;
+    private EditText genre;
     private TextView email;
-    private SwitchMaterial statusView;
+//    private SwitchMaterial statusView;
+    private EditText openTime, closeTime;
+    private int mHour, mMin;
+    private String openTimeInput, closeTimeInput;
+    private String previousOpenTime, previousCloseTime;
 
     private FirebaseUser user;
     private ListenerRegistration listenerRegistration;
+    private MaterialButton saveBtn;
+    private MaterialButton cancelBtn;
 
     public MyShopFragment() {
         // Required empty public constructor
@@ -84,12 +96,37 @@ public class MyShopFragment extends Fragment {
         loc = rootView.findViewById(R.id.profile_loc);
         phone = rootView.findViewById(R.id.profile_contact);
         genre = rootView.findViewById(R.id.profile_genre);
-        statusView = rootView.findViewById(R.id.shop_switch);
+//        statusView = rootView.findViewById(R.id.shop_switch);
         final MaterialButton editBtn = rootView.findViewById(R.id.edit_btn);
         email = rootView.findViewById(R.id.profile_email);
+        openTime = rootView.findViewById(R.id.open_time_input);
+        closeTime = rootView.findViewById(R.id.close_time_input);
+        saveBtn = rootView.findViewById(R.id.time_save_btn);
+        cancelBtn = rootView.findViewById(R.id.time_cancel_btn);
 
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (openTimeInput.compareTo(closeTimeInput) >= 0){
+                    Toast.makeText(getContext(), "Invalid closing time", Toast.LENGTH_SHORT).show();
+                    closeTime.setText(previousCloseTime);
+                    return;
+                }
+                updateTime();
+                saveBtn.setVisibility(View.GONE);
+                cancelBtn.setVisibility(View.GONE);
+            }
+        });
 
-
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openTime.setText(previousOpenTime);
+                closeTime.setText(previousCloseTime);
+                saveBtn.setVisibility(View.GONE);
+                cancelBtn.setVisibility(View.GONE);
+            }
+        });
 
         editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,39 +137,103 @@ public class MyShopFragment extends Fragment {
             }
         });
 
-        statusView.setOnClickListener(new View.OnClickListener() {
+        openTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isNetworkAvailable()){
-                    final boolean active;
-                    if (statusView.isChecked()){
-                        active = true;
-                    }else{
-                        active = false;
-                    }
-                    Map<String , Object> statusUpdate = new HashMap<>();
-                    statusUpdate.put("active", active);
-                    FirebaseFirestore.getInstance().collection("ShopData").document(user.getUid())
-                            .update(statusUpdate).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "onSuccess: Shop status updtaed to :" + active);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, "onFailure: Failed to change status.");
-                            Toast.makeText(getContext(), "Failed to change status.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }else {
-                    Toast.makeText(v.getContext(), "Please check your internet connection.", Toast.LENGTH_SHORT).show();
-                }
+                showTimeDialog(openTime);
             }
         });
 
+        closeTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimeDialog(closeTime);
+            }
+        });
+
+//        statusView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (isNetworkAvailable()){
+//                    final boolean active;
+//                    if (statusView.isChecked()){
+//                        active = true;
+//                    }else{
+//                        active = false;
+//                    }
+//                    Map<String , Object> statusUpdate = new HashMap<>();
+//                    statusUpdate.put("active", active);
+//                    FirebaseFirestore.getInstance().collection("ShopData").document(user.getUid())
+//                            .update(statusUpdate).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void aVoid) {
+//                            Log.d(TAG, "onSuccess: Shop status updtaed to :" + active);
+//                        }
+//                    }).addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            Log.d(TAG, "onFailure: Failed to change status.");
+//                            Toast.makeText(getContext(), "Failed to change status.", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                }else {
+//                    Toast.makeText(v.getContext(), "Please check your internet connection.", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+
 
         return rootView;
+    }
+
+    private void updateTime(){
+        DocumentReference documentReference = FirebaseFirestore.getInstance()
+                .collection("ShopData").document(user.getUid());
+
+        if (isNetworkAvailable()){
+            Map<String , Object> update = new HashMap<>();
+            update.put("openTime", openTimeInput);
+            update.put("closeTime", closeTimeInput);
+            documentReference.update(update).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d(TAG, "onSuccess: New value set for open Time and close Time.");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, "onFailure: Failed to change the value for open Time or close Time.");
+                    Toast.makeText(getActivity(), "Failed to change the value.", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }else {
+            Toast.makeText(getContext(), "Please check your internet connection.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showTimeDialog(final EditText timeView){
+        final Calendar calendar = Calendar.getInstance();
+        mHour = calendar.get(Calendar.HOUR_OF_DAY);
+        mMin = calendar.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                calendar.set(Calendar.MINUTE, minute);
+                SimpleDateFormat mSDF = new SimpleDateFormat("HH:mm");
+                String time = mSDF.format(calendar.getTime());
+                timeView.setText(time);
+                openTimeInput = openTime.getText().toString();
+                closeTimeInput = closeTime.getText().toString();
+                if (!openTimeInput.equals(previousOpenTime) || !closeTimeInput.equals(previousCloseTime)){
+                    saveBtn.setVisibility(View.VISIBLE);
+                    cancelBtn.setVisibility(View.VISIBLE);
+                }
+            }
+        }, mHour, mMin, true);
+        timePickerDialog.show();
     }
 
     private void updateUI(){
@@ -161,8 +262,10 @@ public class MyShopFragment extends Fragment {
                         name.setText(shopData.getShopName());
                         genre.setText(shopData.getShopGenre());
                         phone.setText(shopData.getContact());
-                        statusView.setChecked(shopData.isActive());
+//                        statusView.setChecked(shopData.isActive());
                         loc.setText(shopData.getShopLoc());
+                        openTime.setText(shopData.getOpenTime());
+                        closeTime.setText(shopData.getCloseTime());
                     }else {
                         Log.d(TAG, "onEvent: User not found.");
                         Toast.makeText(getContext(), "Failed to get user information.", Toast.LENGTH_SHORT).show();
@@ -176,6 +279,22 @@ public class MyShopFragment extends Fragment {
             Toast.makeText(getContext(), "Please check your internet connection.", Toast.LENGTH_SHORT).show();
         }
 
+    }
+    private void timeRevert(String openTime, String closeTime){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat saveDateFormat = new SimpleDateFormat("hh:mm a");
+        try {
+            Date date1 = simpleDateFormat.parse(openTime);
+            previousOpenTime = saveDateFormat.format(date1);
+        }catch (Exception e){
+            Log.d(TAG, "timeConversion: Failed to parse time.");
+        }
+        try {
+            Date date2 = simpleDateFormat.parse(closeTime);
+            previousCloseTime = saveDateFormat.format(date2);
+        }catch (Exception e){
+            Log.d(TAG, "timeConversion: failed to parse time.");
+        }
     }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager

@@ -11,8 +11,28 @@ public class ShopData {
     private String contact;
     private boolean active;
     private double distance;
+    private String openTime = "12:00";
+    private String closeTime = "12:05";
 
     public ShopData() {
+    }
+
+
+
+    public String getOpenTime() {
+        return openTime;
+    }
+
+    public void setOpenTime(String openTime) {
+        this.openTime = openTime;
+    }
+
+    public String getCloseTime() {
+        return closeTime;
+    }
+
+    public void setCloseTime(String closeTime) {
+        this.closeTime = closeTime;
     }
 
     public double getDistance() {

@@ -11,23 +11,26 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="4dp"
         android:paddingLeft="5dp">
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="105dp"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:id="@+id/shop_img"
             android:src="@drawable/pic"
             android:layout_margin="5dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"/>
         <TextView
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:id="@+id/shop_name"
             android:layout_width="wrap_content"
-            android:layout_height="22dp"
+            android:layout_height="wrap_content"
             android:maxWidth="200dp"
             android:inputType="textCapWords"
             android:text="@string/default_text"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textAllCaps="true"
@@ -35,20 +38,23 @@
         <TextView
             android:id="@+id/shop_genre"
             android:layout_width="wrap_content"
-            android:layout_height="22dp"
+            android:layout_height="wrap_content"
             android:maxWidth="200dp"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:inputType="textCapWords"
             android:text="@string/default_text"
             android:layout_below="@+id/shop_name"
             android:textSize="14sp"
-            android:textStyle="bold"
-            android:paddingTop="4dp"/>
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/shop_loc"
             android:layout_width="wrap_content"
-            android:layout_height="22dp"
-            android:maxWidth="200dp"
+            android:layout_height="wrap_content"
+            android:maxWidth="160dp"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:inputType="textCapWords"
             android:text="@string/default_text"
             android:textColor="@android:color/black"
@@ -59,11 +65,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
             android:textStyle="italic"
             android:paddingTop="2dp"
-            android:paddingRight="5dp"
-            android:paddingLeft="5dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:maxWidth="50dp"
             android:layout_toRightOf="@+id/shop_loc"
             android:layout_toEndOf="@+id/shop_loc"
             android:layout_below="@+id/shop_genre"
@@ -73,21 +81,25 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="22dp"
-            android:maxWidth="200dp"
-            android:text="9812345670"
-            android:layout_below="@+id/shop_loc"
+            android:layout_height="wrap_content"
+            android:maxWidth="100dp"
+            android:text="9000000000"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_toEndOf="@+id/shop_genre"
+            android:layout_toRightOf="@+id/shop_genre"
+            android:layout_below="@+id/shop_name"
             android:textColor="@android:color/black"
-            android:paddingTop="2dp"
-            android:textSize="14sp"
             android:textStyle="italic"
             android:id="@+id/shop_contact"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:text="Open"
@@ -95,8 +107,40 @@
             android:textColor="@android:color/black"
             android:id="@+id/shop_status"
             android:layout_below="@id/shop_loc"
-            android:layout_toRightOf="@+id/shop_contact"/>
-
+            android:layout_toRightOf="@+id/shop_close_time"
+            android:layout_toEndOf="@+id/shop_close_time"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Open: "
+            android:id="@+id/shop_open"
+            android:layout_below="@+id/shop_loc"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/shop_open_time"
+            android:textColor="@android:color/black"
+            android:layout_below="@+id/shop_loc"
+            android:layout_toEndOf="@+id/shop_open"
+            android:layout_toRightOf="@+id/shop_open"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Close: "
+            android:id="@+id/shop_close"
+            android:layout_toEndOf="@+id/shop_open_time"
+            android:layout_toRightOf="@+id/shop_open_time"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_below="@+id/shop_loc"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/shop_close_time"
+            android:textColor="@android:color/black"
+            android:layout_below="@+id/shop_loc"
+            android:layout_toEndOf="@+id/shop_close"
+            android:layout_toRightOf="@+id/shop_close"/>
     </RelativeLayout>
 
 </com.google.android.material.card.MaterialCardView>

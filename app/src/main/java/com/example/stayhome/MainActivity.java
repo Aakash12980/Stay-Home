@@ -80,20 +80,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navHeader = navigationView.inflateHeaderView(R.layout.nav_header_view);
         nav_menu = (Menu) navigationView.getMenu();
 
-
-        if (savedInstanceState == null){
-            if (getIntent().hasExtra("fragment")){
-                String load_frag = getIntent().getStringExtra("fragment");
-                getIntent().removeExtra("fragment");
-                Log.d(TAG, "onCreate: Inside Intent: "+ load_frag);
-                if (load_frag.equals("setting")){
-                    fragment = new SettingFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.nav_fragment_container, fragment, "setting_frag").addToBackStack("setting_frag").commit();
-                }
-            }else {
-                getSupportFragmentManager().beginTransaction().replace(R.id.nav_fragment_container, new HomeFragment(), "home_frag").addToBackStack("home_frag").commit();
-            }
-        }
         getSupportFragmentManager().popBackStack("home_frag", 0);
 
         toolbar = findViewById(R.id.nav_toolbar);
@@ -108,6 +94,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggleDrawer);
         toggleDrawer.syncState();
 
+        if (savedInstanceState == null){
+            if (getIntent().hasExtra("fragment")){
+                String load_frag = getIntent().getStringExtra("fragment");
+                getIntent().removeExtra("fragment");
+                Log.d(TAG, "onCreate: Inside Intent: "+ load_frag);
+                if (load_frag.equals("setting")){
+                    fragment = new SettingFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.nav_fragment_container, fragment, "setting_frag").addToBackStack("setting_frag").commit();
+                }
+            }else {
+                getSupportFragmentManager().beginTransaction().replace(R.id.nav_fragment_container, new HomeFragment(), "home_frag").addToBackStack("home_frag").commit();
+            }
+        }
     }
 
     @Override
@@ -148,11 +147,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (user == null){
             hideItem();
         }else {
-//            unHideItem();
             final StorageReference storageReference = firebaseStorage.getReference("ProfilePic")
                     .child(user.getUid()).child("profile.jpg");
             documentReference = FirebaseFirestore.getInstance().collection("ShopInfo").document(user.getUid());
-            Log.d(TAG, "updateUI: DISPLAY NAME: "+ user.getDisplayName());
 
             if (isNetworkAvailable()){
                 DocumentReference documentReference = FirebaseFirestore.getInstance().collection("ShopData").document(user.getUid());
@@ -160,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                         if (documentSnapshot.exists()){
+                            nav_menu.findItem(R.id.nav_bar_login_frag).setVisible(false);
                             nav_menu.findItem(R.id.nav_bar_login_frag).setVisible(false);
                             nameView = navHeader.findViewById(R.id.shop_prof_name);
                             locView = navHeader.findViewById(R.id.shop_prof_loc);
@@ -259,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onDestroy(){
         super.onDestroy();
     }
     private boolean isNetworkAvailable() {
@@ -267,6 +265,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+
     }
 
 

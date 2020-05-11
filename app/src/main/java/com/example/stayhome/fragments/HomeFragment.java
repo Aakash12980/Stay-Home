@@ -1,5 +1,6 @@
 package com.example.stayhome.fragments;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -7,15 +8,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.example.stayhome.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.navigation.NavigationView;
 
 /**
@@ -45,7 +49,6 @@ public class HomeFragment extends Fragment{
         FrameLayout fragContainer = rootView.findViewById(R.id.shop_fragment_container);
         navigationView.setOnNavigationItemSelectedListener(navListener);
         getChildFragmentManager().beginTransaction().replace(R.id.shop_fragment_container, new HomeOpen()).commit();
-
 
         return rootView;
     }
@@ -90,6 +93,27 @@ public class HomeFragment extends Fragment{
         {
             menuItem.setChecked(true);
         }
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     /**

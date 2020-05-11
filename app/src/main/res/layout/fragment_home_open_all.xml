@@ -11,7 +11,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/no_data_view"
-        android:text="Couldn't find any active workspace."
         android:textStyle="bold"
         android:textSize="16sp"
         android:textColor="@android:color/white"
@@ -25,9 +24,29 @@
         android:paddingTop="14dp"
         android:paddingBottom="10dp"
         android:textColor="@android:color/white"
-        android:text="Nearby Workspace"
+        android:text="Opened "
         android:textSize="16sp"
         />
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Banks"
+        android:inputType="textCapWords"
+        android:focusable="false"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:id="@+id/genre_type"
+        android:textColor="@android:color/white"
+        android:paddingTop="14dp"
+        android:paddingLeft="10dp"
+        android:paddingEnd="10dp"
+        android:paddingRight="10dp"
+        android:paddingStart="10dp"
+        android:backgroundTint="@android:color/white"
+        android:layout_toRightOf="@+id/nearby_shop_txt"
+        android:layout_toEndOf="@+id/nearby_shop_txt"/>
+
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

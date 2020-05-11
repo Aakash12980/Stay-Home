@@ -1,6 +1,7 @@
 package com.example.stayhome.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,6 +34,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,6 +49,11 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,6 +80,10 @@ public class SettingFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private FirebaseUser user;
     private ProgressBar progressBar;
+    private String genreString;
+    private int itemChecked;
+    private String[] items = new String[] {"Banks", "Shops", "Hospitals", "Pharmacy", "Clinics", "Government Offices",
+            "Private Companies", "Schools/Colleges", "Petrol/Diesel Pumps", "Home Businesses", "Industries"};
 
     public SettingFragment() {
         // Required empty public constructor
@@ -127,7 +139,7 @@ public class SettingFragment extends Fragment {
         genreView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openDialog("New Genre");
+                showDialog();
             }
         });
         contactView.setOnClickListener(new View.OnClickListener() {
@@ -148,6 +160,55 @@ public class SettingFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void showDialog(){
+        Arrays.sort(items);
+        genreString = genre.getText().toString();
+        itemChecked = Arrays.asList(items).indexOf(genreString);
+        MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(getActivity())
+                .setTitle("Select Genre")
+                .setSingleChoiceItems(items, itemChecked, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "onClick: item clicked. "+ items[which]);
+                        itemChecked = which;
+                    }
+                }).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        DocumentReference documentReference = FirebaseFirestore.getInstance()
+                                .collection("ShopData").document(user.getUid());
+                        if (isNetworkAvailable()){
+                            Map<String , Object> update = new HashMap<>();
+                            update.put("shopGenre", items[itemChecked]);
+                            documentReference.update(update).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "onSuccess: New value set for Settings");
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, "onFailure: Failed to change the value for Settings");
+                                    Toast.makeText(getActivity(), "Failed to change the value.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }else {
+                            Toast.makeText(getContext(), "Please check your internet connection.", Toast.LENGTH_SHORT).show();
+                        }
+                        if (itemChecked >= 0){
+                            dialog.dismiss();
+                        }
+
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        dialogBuilder.show();
     }
 
     private void updateUI(){

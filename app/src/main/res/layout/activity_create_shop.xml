@@ -75,6 +75,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
+                android:focusable="false"
+                android:clickable="true"
                 android:hint="Type of workspace"
                 android:paddingRight="8dp"
                 android:paddingLeft="8dp"/>

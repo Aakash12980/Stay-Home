@@ -148,6 +148,14 @@ public class UpdateField extends AppCompatDialogFragment {
                 return false;
             }
         }
+        try {
+            if (frag.equals("New Contact") && (data.length() < 9 || data.length() > 10)){
+                inputView.setError("Please enter valid phone number.");
+                return false;
+            }
+        }catch (NullPointerException e){
+            data = "";
+        }
 
         if (TextUtils.isEmpty(data)) {
             inputView.setError("This field cannot be empty!");
@@ -183,9 +191,6 @@ public class UpdateField extends AppCompatDialogFragment {
                 field = "contact";
                 inputView.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
                 break;
-            case "New Genre":
-                field = "shopGenre";
-                break;
             case "New Email":
                 inputView.getEditText().setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 break;
@@ -213,6 +218,7 @@ public class UpdateField extends AppCompatDialogFragment {
                                 if (task.isSuccessful()){
                                     Log.d(TAG, "onComplete: Email address changed successfully.");
                                     Toast.makeText(getActivity(), "Email changed successfully.", Toast.LENGTH_SHORT).show();
+                                    dismiss();
                                 }else {
                                     Log.d(TAG, "onComplete: Failed to change email.");
                                     Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -249,6 +255,7 @@ public class UpdateField extends AppCompatDialogFragment {
                                 if (task.isSuccessful()){
                                     Log.d(TAG, "onComplete: Password changed successfully.");
                                     Toast.makeText(getActivity(), "Password changed successfully.", Toast.LENGTH_SHORT).show();
+                                    dismiss();
                                 }else {
                                     Log.d(TAG, "onComplete: Failed to change password.");
                                     Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();

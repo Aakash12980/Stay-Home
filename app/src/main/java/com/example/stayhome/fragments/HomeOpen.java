@@ -2,6 +2,7 @@ package com.example.stayhome.fragments;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -24,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +40,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -45,7 +48,10 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,7 +79,11 @@ public class HomeOpen extends Fragment {
     private TextView noData;
     private TextView title;
     private ShopData shop;
-    private Query queryDocumentSnapshot;
+    private String genreString;
+    private EditText genreView;
+    private int itemChecked;
+    private String[] items = new String[] {"Banks", "Shops", "Hospitals", "Pharmacy", "Clinics", "Government Offices",
+        "Private Companies", "Schools/Colleges", "Petrol/Diesel Pumps", "Home Businesses", "Industries"};
 
 
     private OnFragmentInteractionListener mListener;
@@ -93,24 +103,63 @@ public class HomeOpen extends Fragment {
         recyclerView = rootView.findViewById(R.id.open_shop_list);
         TextView showMap = rootView.findViewById(R.id.view_in_map);
         noData = rootView.findViewById(R.id.no_data_view);
+        genreView = rootView.findViewById(R.id.genre_type);
+        genreString = genreView.getText().toString();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new OpenAllShopListAdapter(getContext(), shopData);
         recyclerView.setAdapter(adapter);
 
+        genreView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+
         showMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), HomeMapActivity.class));
+                Intent intent = new Intent(getContext(), HomeMapActivity.class);
+                intent.putExtra("genre", genreString);
+                startActivity(intent);
             }
         });
 
         return rootView;
     }
+    private void showDialog(){
+        Arrays.sort(items);
+        itemChecked = Arrays.asList(items).indexOf(genreString);
+        MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(getActivity())
+                .setTitle("Select Genre")
+                .setSingleChoiceItems(items, itemChecked, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "onClick: item clicked. "+ items[which]);
+                        itemChecked = which;
+                    }
+                }).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        genreView.setText(items[itemChecked]);
+                        genreString = items[itemChecked];
+                        updateUI();
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        dialogBuilder.show();
+    }
+
     private void updateUI(){
-        title.setText("Currently Opened workspaces");
+        title.setText("Opened ");
         Query queryDocumentSnapshot = FirebaseFirestore.getInstance().collection("ShopData")
-                .whereEqualTo("active", true);
+                .whereEqualTo("shopGenre", genreString);
         if (isNetworkAvailable()){
             ProgressBar progressBar = new ProgressBar(getContext());
             progressBar.setVisibility(View.VISIBLE);
@@ -120,21 +169,31 @@ public class HomeOpen extends Fragment {
                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                     if (queryDocumentSnapshots.isEmpty()){
                         noData.setVisibility(View.VISIBLE);
-                        Log.d(TAG, "onSuccess: No active workspace were found.");
+                        noData.setText("Couldn't find any active "+ genreString);
+                        Log.d(TAG, "onSuccess: No active " + genreString +" were found.");
                     }else {
                         noData.setVisibility(View.GONE);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+                        Date date = new Date();
+                        String currentDate = dateFormat.format(date);
                         for (QueryDocumentSnapshot data: queryDocumentSnapshots){
                             shop = data.toObject(ShopData.class);
                             Location loc = new Location("");
                             loc.setLatitude(Double.valueOf(shop.getLatLng().get(0)));
                             loc.setLongitude(Double.valueOf(shop.getLatLng().get(1)));
                             Log.d(TAG, "onDataChange: Distance: "+ deviceLoc.getLatitude() +" " +deviceLoc.getLongitude());
-                            distance = deviceLoc.distanceTo(loc) / 1000;
+                            distance = deviceLoc.distanceTo(loc) / 1000000;
                             Log.d(TAG, "onDataChange: Distance: "+ distance);
                             if (distance < 20){
-                                shop.setDistance(distance);
-                                Log.d(TAG, "onDataChange: Distance: "+ distance);
-                                shopData.add(shop);
+                                String openTime = shop.getOpenTime();
+                                String closeTime = shop.getCloseTime();
+
+                                if (currentDate.compareTo(openTime) >= 0 && currentDate.compareTo(closeTime) <= 0){
+                                    shop.setDistance(distance);
+                                    shop.setActive(true);
+                                    Log.d(TAG, "onDataChange: Distance: "+ distance);
+                                    shopData.add(shop);
+                                }
                             }
                         }
                         adapter.setItems(shopData);

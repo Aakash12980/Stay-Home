@@ -1,15 +1,14 @@
 package com.example.stayhome.adpaters;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +21,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class OpenAllShopListAdapter extends RecyclerView.Adapter<OpenAllShopListAdapter.OpenShopListViewHolder> {
@@ -62,11 +62,13 @@ public class OpenAllShopListAdapter extends RecyclerView.Adapter<OpenAllShopList
                 ShopData shop = data.get(position);
                 holder.shopName.setText(shop.getShopName());
                 holder.shopGenre.setText(shop.getShopGenre());
+                holder.closeTime.setText(shop.getCloseTime());
+                holder.openTime.setText(shop.getOpenTime());
+
                 if (shop.isActive()){
                     holder.statusView.setVisibility(View.VISIBLE);
                 }else {
                     holder.statusView.setVisibility(View.INVISIBLE);
-
                 }
 
                 StorageReference storageReference = firebaseStorage.getReference("ProfilePic")
@@ -82,9 +84,9 @@ public class OpenAllShopListAdapter extends RecyclerView.Adapter<OpenAllShopList
                     }
                 });
 
-                if (shop.getDistance() < 0){
+                if (shop.getDistance() < 20){
                     holder.distView.setVisibility(View.VISIBLE);
-                    holder.distView.setText(String.valueOf(meterToMile(shop.getDistance())) + R.string.mile);
+                    holder.distView.setText(context.getString(R.string.mile, meterToMile(shop.getDistance())));
                 }else {
                     holder.distView.setVisibility(View.INVISIBLE);
                 }
@@ -94,8 +96,6 @@ public class OpenAllShopListAdapter extends RecyclerView.Adapter<OpenAllShopList
                     holder.contactView.setText(shop.getContact());
                 }
             }
-
-
     }
 
     public class OpenShopListViewHolder extends RecyclerView.ViewHolder{
@@ -107,6 +107,7 @@ public class OpenAllShopListAdapter extends RecyclerView.Adapter<OpenAllShopList
         TextView distView;
         TextView locView;
         TextView contactView;
+        TextView openTime, closeTime;
 
         public OpenShopListViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -118,6 +119,9 @@ public class OpenAllShopListAdapter extends RecyclerView.Adapter<OpenAllShopList
             distView = itemView.findViewById(R.id.dist_view);
             locView = itemView.findViewById(R.id.shop_loc);
             contactView = itemView.findViewById(R.id.shop_contact);
+            openTime = itemView.findViewById(R.id.shop_open_time);
+            closeTime = itemView.findViewById(R.id.shop_close_time);
+
         }
     }
 
@@ -125,7 +129,9 @@ public class OpenAllShopListAdapter extends RecyclerView.Adapter<OpenAllShopList
         this.data = data;
     }
 
-    public double meterToMile(double dist){
-        return dist * 0.621371;
+    public String meterToMile(double dist){
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+
+        return decimalFormat.format(dist * 0.621371);
     }
 }
