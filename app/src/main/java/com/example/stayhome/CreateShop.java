@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -186,38 +185,6 @@ public class CreateShop extends AppCompatActivity {
         }
         progressBar.setVisibility(View.INVISIBLE);
     }
-
-//    private boolean setDisplayName(){
-//        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-//                .setDisplayName(name)
-//                .build();
-//
-//        if (isNetworkAvailable()){
-//            user.updateProfile(profileUpdates)
-//                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<Void> task) {
-//                            if (task.isSuccessful()) {
-//                                Log.d(TAG, "Display name is updated for "+ name);
-//                            }else {
-//                                flag = false;
-//                                documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                    @Override
-//                                    public void onSuccess(Void aVoid) {
-//                                        Toast.makeText(CreateShop.this, "Failed to create shop account. Please try again later.", Toast.LENGTH_SHORT).show();
-//                                    }
-//                                });
-//                                Log.d(TAG, "onComplete: Failed to set display name.");
-//                            }
-//                        }
-//                    });
-//
-//        }else {
-//            flag = false;
-//            Toast.makeText(this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
-//        }
-//        return flag;
-//    }
     private boolean validateInputs(){
         try {
             name = shopName.getEditText().getText().toString().trim().toLowerCase();
@@ -225,7 +192,7 @@ public class CreateShop extends AppCompatActivity {
             name = "";
         }
         try {
-            genre = shopGenre.getEditText().getText().toString().trim().toLowerCase();
+            genre = shopGenre.getEditText().getText().toString();
         }catch (NullPointerException e){
             genre ="";
         }

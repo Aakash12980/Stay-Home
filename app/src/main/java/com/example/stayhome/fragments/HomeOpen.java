@@ -106,7 +106,7 @@ public class HomeOpen extends Fragment {
         TextView showMap = rootView.findViewById(R.id.view_in_map);
         noData = rootView.findViewById(R.id.no_data_view);
         genreView = rootView.findViewById(R.id.genre_type);
-        genreString = genreView.getText().toString().toLowerCase();
+        genreString = genreView.getText().toString();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new OpenAllShopListAdapter(getContext(), shopData);
@@ -145,7 +145,7 @@ public class HomeOpen extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         genreView.setText(items[itemChecked]);
-                        genreString = items[itemChecked].toLowerCase();
+                        genreString = items[itemChecked];
                         if (shopData.size() > 0){
                             shopData.clear();
                         }
