@@ -11,81 +11,234 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp">
 
-        <com.google.android.material.card.MaterialCardView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:id="@+id/country_select"
-            app:cardCornerRadius="8dp">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/country_list_select">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Worldwide"
-                    android:padding="8dp"
-                    android:textSize="16sp"
-                    android:id="@+id/country_name"/>
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:layout_toRightOf="@+id/country_name"
-                    android:layout_toEndOf="@+id/country_name"
-                    android:id="@+id/spinner"/>
-            </RelativeLayout>
-
-        </com.google.android.material.card.MaterialCardView>
+            android:text="Covid-19 Summary of Nepal"
+            android:textColor="@android:color/white"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:padding="12dp"
+            android:textSize="20sp"
+            android:id="@+id/covid_title"/>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_height="80dp"
             android:id="@+id/card1"
-            android:layout_below="@+id/country_select"
-            app:cardCornerRadius="14dp">
+            app:cardCornerRadius="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_below="@+id/covid_title"
+            app:cardBackgroundColor="@color/quantum_googblue">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp"
+                    android:src="@drawable/total_case"
+                    android:id="@+id/toal_case_img"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="12dp"
                     android:id="@+id/total_case"
-                    android:text="Total Confirmed"
+                    android:text="Total Cases"
+                    android:textStyle="bold"
+                    android:paddingLeft="12dp"
+                    android:paddingStart="12dp"
+                    android:textColor="@android:color/white"
                     android:textSize="20sp"
-                    android:layout_centerHorizontal="true"/>
+                    android:layout_toRightOf="@+id/toal_case_img"
+                    android:layout_toEndOf="@+id/toal_case_img"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/total_case_number"
                     android:text="000"
                     android:textSize="20sp"
-                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:paddingLeft="12dp"
+                    android:paddingStart="12dp"
+                    android:layout_toRightOf="@+id/toal_case_img"
+                    android:layout_toEndOf="@+id/toal_case_img"
+                    android:textColor="@android:color/white"
                     android:layout_below="@+id/total_case"
                     android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:id="@+id/card2"
+            android:layout_below="@+id/card1"
+            app:cardCornerRadius="8dp"
+            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/quantum_cyan">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp"
+                    android:src="@drawable/isolation"
+                    android:id="@+id/isolation_img"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:id="@+id/total_deaths"
-                    android:text="Total Deaths"
+                    android:id="@+id/isolation"
+                    android:text="In Isolation"
                     android:textSize="20sp"
-                    android:layout_below="@+id/total_case_number"
-                    android:layout_centerHorizontal="true"/>
+                    android:textStyle="bold"
+                    android:paddingLeft="12dp"
+                    android:paddingStart="12dp"
+                    android:textColor="@android:color/white"
+                    android:layout_toRightOf="@+id/isolation_img"
+                    android:layout_toEndOf="@+id/isolation_img"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/total_deaths_number"
+                    android:id="@+id/isolation_number"
                     android:text="000"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="@color/quantum_googred"
-                    android:layout_below="@+id/total_deaths"
-                    android:layout_centerHorizontal="true"/>
+                    android:paddingLeft="12dp"
+                    android:paddingStart="12dp"
+                    android:textColor="@android:color/white"
+                    android:layout_toRightOf="@+id/isolation_img"
+                    android:layout_toEndOf="@+id/isolation_img"
+                    android:layout_below="@+id/isolation"/>
+
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:id="@+id/card3"
+            android:layout_below="@+id/card2"
+            app:cardCornerRadius="8dp"
+            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/quantum_grey">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp"
+                    android:src="@drawable/quarantined"
+                    android:id="@+id/quarantined_img"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/quarantined"
+                    android:text="Quarantined"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:paddingLeft="12dp"
+                    android:paddingStart="12dp"
+                    android:textColor="@android:color/white"
+                    android:layout_toRightOf="@+id/quarantined_img"
+                    android:layout_toEndOf="@+id/quarantined_img"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/quarantined_number"
+                    android:text="000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_below="@+id/quarantined"
+                    android:layout_centerHorizontal="true"
+                    android:paddingLeft="12dp"
+                    android:paddingStart="12dp"
+                    android:textColor="@android:color/white"
+                    android:layout_toRightOf="@+id/quarantined_img"
+                    android:layout_toEndOf="@+id/quarantined_img"/>
+
+            </RelativeLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:id="@+id/card4"
+            android:layout_below="@+id/card3"
+            app:cardCornerRadius="8dp"
+            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/quantum_purple">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp"
+                    android:src="@drawable/positive"
+                    android:id="@+id/positive_img"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:id="@+id/positive"
+                    android:text="Positive Cases"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:paddingLeft="12dp"
+                    android:paddingStart="12dp"
+                    android:textColor="@android:color/white"
+                    android:layout_toRightOf="@+id/positive_img"
+                    android:layout_toEndOf="@+id/positive_img"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/positive_numer"
+                    android:text="000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_below="@+id/positive"
+                    android:paddingLeft="12dp"
+                    android:paddingStart="12dp"
+                    android:textColor="@android:color/white"
+                    android:layout_toRightOf="@+id/positive_img"
+                    android:layout_toEndOf="@+id/positive_img"/>
+
+            </RelativeLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:id="@+id/card5"
+            android:layout_below="@+id/card4"
+            app:cardCornerRadius="8dp"
+            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/quantum_googgreen">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp"
+                    android:src="@drawable/recovered"
+                    android:id="@+id/recovered_img"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -93,8 +246,12 @@
                     android:id="@+id/total_recovered"
                     android:text="Total Recovered"
                     android:textSize="20sp"
-                    android:layout_below="@id/total_deaths_number"
-                    android:layout_centerHorizontal="true"/>
+                    android:textStyle="bold"
+                    android:paddingLeft="12dp"
+                    android:paddingStart="12dp"
+                    android:textColor="@android:color/white"
+                    android:layout_toRightOf="@+id/recovered_img"
+                    android:layout_toEndOf="@+id/recovered_img"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -102,81 +259,63 @@
                     android:text="000"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="@color/quantum_googgreen"
                     android:layout_below="@+id/total_recovered"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="8dp"/>
+                    android:paddingLeft="12dp"
+                    android:paddingStart="12dp"
+                    android:textColor="@android:color/white"
+                    android:layout_toRightOf="@+id/recovered_img"
+                    android:layout_toEndOf="@+id/recovered_img" />
             </RelativeLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/card2"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/card1"
-            app:cardCornerRadius="14dp">
+            android:layout_height="80dp"
+            android:id="@+id/card6"
+            android:layout_below="@+id/card5"
+            app:cardCornerRadius="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="@color/quantum_googred">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp"
+                    android:src="@drawable/death"
+                    android:id="@+id/death_img"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:id="@+id/new_case"
-                    android:text="New Cases"
+                    android:id="@+id/total_deaths"
+                    android:text="Total Deaths"
                     android:textSize="20sp"
-                    android:layout_centerHorizontal="true"/>
+                    android:textStyle="bold"
+                    android:paddingLeft="12dp"
+                    android:paddingStart="12dp"
+                    android:textColor="@android:color/white"
+                    android:layout_toRightOf="@+id/death_img"
+                    android:layout_toEndOf="@+id/death_img"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/new_case_number"
-                    android:text="000"
-                    android:textSize="20sp"
-                    android:textColor="@android:color/black"
-                    android:layout_below="@+id/new_case"
-                    android:layout_centerHorizontal="true"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:id="@+id/new_deaths"
-                    android:text="New Deaths"
-                    android:textSize="20sp"
-                    android:layout_below="@+id/new_case_number"
-                    android:layout_centerHorizontal="true"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/new_deaths_number"
+                    android:id="@+id/total_deaths_number"
                     android:text="000"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="@color/quantum_googred"
-                    android:layout_below="@+id/new_deaths"
-                    android:layout_centerHorizontal="true"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:id="@+id/new_recovered"
-                    android:text="New Recovered"
-                    android:textSize="20sp"
-                    android:layout_below="@id/new_deaths_number"
-                    android:layout_centerHorizontal="true"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/new_recovered_number"
-                    android:text="000"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/quantum_googgreen"
-                    android:layout_below="@+id/new_recovered"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_below="@+id/total_deaths"
+                    android:paddingLeft="12dp"
+                    android:paddingStart="12dp"
+                    android:textColor="@android:color/white"
+                    android:layout_toRightOf="@+id/death_img"
+                    android:layout_toEndOf="@+id/death_img" />
             </RelativeLayout>
 
         </com.google.android.material.card.MaterialCardView>

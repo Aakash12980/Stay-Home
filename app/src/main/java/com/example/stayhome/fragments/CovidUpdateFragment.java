@@ -1,8 +1,6 @@
 package com.example.stayhome.fragments;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -40,12 +38,12 @@ public class CovidUpdateFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private CovidData data;
     private static final String TAG = "COVID UPDATE FRAGMENT";
-    private TextView totalConfirmed;
+    private TextView totalCases;
     private TextView totalDeaths;
     private TextView totalRecovered;
-    private TextView newConfirmed;
-    private TextView newDeaths;
-    private TextView newRecovered;
+    private TextView positive;
+    private TextView quarantined;
+    private TextView isolation;
     private ProgressBar progressBar;
     private TextView countryName;
     private String country;
@@ -60,97 +58,47 @@ public class CovidUpdateFragment extends Fragment {
         // Inflate the layout for this fragment
         final View rootView =  inflater.inflate(R.layout.fragment_covid_update, container, false);
 
-        totalConfirmed = rootView.findViewById(R.id.total_case_number);
+        totalCases = rootView.findViewById(R.id.total_case_number);
         totalDeaths = rootView.findViewById(R.id.total_deaths_number);
         totalRecovered = rootView.findViewById(R.id.total_recovered_number);
-        newConfirmed = rootView.findViewById(R.id.new_case_number);
-        newDeaths = rootView.findViewById(R.id.new_deaths_number);
-        newRecovered = rootView.findViewById(R.id.new_recovered_number);
-        View countrySelect = rootView.findViewById(R.id.country_list_select);
-        countryName = rootView.findViewById(R.id.country_name);
+        isolation = rootView.findViewById(R.id.isolation_number);
+        quarantined = rootView.findViewById(R.id.quarantined_number);
+        positive = rootView.findViewById(R.id.positive_numer);
 
-        try {
-            country = getArguments().getString("newSelection", "Worldwide");
-            Log.d(TAG, "onCreateView: Country Name: "+ country);
-        }catch (NullPointerException e){
-            country = "Worldwide";
-        }
-        countryName.setText(country);
-        if (isNetworkAvailable()){
-            setCountryDetails(country);
-        }else {
-            Toast.makeText(getContext(), "Please check your internet connection.", Toast.LENGTH_SHORT).show();
-        }
-
-        countrySelect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDialog();
-
-            }
-        });
+        getData();
 
         return rootView;
     }
-    public void setCountryDetails(String cName){
-        progressBar = new ProgressBar(getContext());
-        progressBar.setVisibility(View.VISIBLE);
-        try {
-            new DataLoader(country, new DataLoader.AsyncResultListener() {
-                @Override
-                public void getResult(CovidData covidData) {
-                    data = covidData;
-                    if (data != null){
-                        totalConfirmed.setText(data.getTotalConfirmed());
-                        totalDeaths.setText(data.getTotalDeaths());
-                        totalRecovered.setText(data.getTotalRecovered());
-                        newConfirmed.setText(data.getNewConfirmed());
-                        newDeaths.setText(data.getNewDeaths());
-                        newRecovered.setText(data.getNewRecovered());
-                        progressBar.setVisibility(View.INVISIBLE);
-                    }else {
-                        Log.d(TAG, "onCreateView: Data is Null.................");
-                    }
-                }
-            }).execute();
-        }catch (Exception e){
-            e.printStackTrace();
-            Toast.makeText(getContext(), "Failed to get the data.", Toast.LENGTH_SHORT).show();
-        }
-    }
+    public void getData(){
+       if (isNetworkAvailable()){
+           progressBar = new ProgressBar(getContext());
+           progressBar.setVisibility(View.VISIBLE);
+           try {
+               new DataLoader(new DataLoader.AsyncResultListener() {
+                   @Override
+                   public void getResult(CovidData covidData) {
+                       data = covidData;
+                       if (data != null){
+                           totalCases.setText(data.getTotalCase());
+                           totalDeaths.setText(data.getTotalDeaths());
+                           totalRecovered.setText(data.getTotalRecovered());
+                           positive.setText(data.getPositive());
+                           isolation.setText(data.getIsolation());
+                           quarantined.setText(data.getQuarantined());
+                           progressBar.setVisibility(View.INVISIBLE);
+                       }else {
+                           Log.d(TAG, "onCreateView: Data is Null.................");
+                       }
+                   }
+               }).execute();
+           }catch (Exception e){
+               e.printStackTrace();
+               Toast.makeText(getContext(), "Failed to get the data.", Toast.LENGTH_SHORT).show();
+           }
 
-    public static Intent newIntent(String message) {
-        Intent intent = new Intent();
-        intent.putExtra("selectedCountry", message);
-        return intent;
-    }
-
-    private void openDialog(){
-        CountrySelect countrySelect = new CountrySelect();
-        countrySelect.setTargetFragment(CovidUpdateFragment.this, 1);
-        countrySelect.show(getFragmentManager(), "covid_update_frag");
-    }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode != Activity.RESULT_OK){
-            return;
-        }
-        if (requestCode == 1){
-            try {
-                country = data.getStringExtra("selectedCountry");
-                Log.d(TAG, "onActivityResult: Selected Country: "+country);
-                countryName.setText(country);
-                if (isNetworkAvailable()){
-                    setCountryDetails(country);
-                }else {
-                    Toast.makeText(getContext(), "Please check your internet connection.", Toast.LENGTH_SHORT).show();
-                }
-
-            }catch (NullPointerException e){
-                Log.d(TAG, "onActivityResult: Empty CountryName returned.");
-            }
-
-        }
+       }else {
+           Toast.makeText(getContext(), "Please check your internet connection.", Toast.LENGTH_SHORT).show();
+       }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

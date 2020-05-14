@@ -1,57 +1,46 @@
 package com.example.stayhome.data;
 
 public class CovidData{
-    private String country;
-    private String newConfirmed;
-    private String totalConfirmed;
-    private String newDeaths;
+    private String totalCase;
+    private String isolation;
+    private String quarantined;
+    private String positive;
     private String totalDeaths;
-    private String newRecovered;
     private String totalRecovered;
 
-    public CovidData(){
+    public CovidData() {
     }
 
-    public CovidData(String country, String newConfirmed, String totalConfirmed, String newDeaths, String totalDeaths, String newRecovered, String totalRecovered) {
-        this.country = country;
-        this.newConfirmed = newConfirmed;
-        this.totalConfirmed = totalConfirmed;
-        this.newDeaths = newDeaths;
-        this.totalDeaths = totalDeaths;
-        this.newRecovered = newRecovered;
-        this.totalRecovered = totalRecovered;
+    public String getTotalCase() {
+        return totalCase;
     }
 
-    public String getCountry() {
-        return country;
+    public void setTotalCase(String totalCase) {
+        this.totalCase = totalCase;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public String getIsolation() {
+        return isolation;
     }
 
-    public String getNewConfirmed() {
-        return newConfirmed;
+    public void setIsolation(String isolation) {
+        this.isolation = isolation;
     }
 
-    public void setNewConfirmed(String newConfirmed) {
-        this.newConfirmed = newConfirmed;
+    public String getQuarantined() {
+        return quarantined;
     }
 
-    public String getTotalConfirmed() {
-        return totalConfirmed;
+    public void setQuarantined(String quarantined) {
+        this.quarantined = quarantined;
     }
 
-    public void setTotalConfirmed(String totalConfirmed) {
-        this.totalConfirmed = totalConfirmed;
+    public String getPositive() {
+        return positive;
     }
 
-    public String getNewDeaths() {
-        return newDeaths;
-    }
-
-    public void setNewDeaths(String newDeaths) {
-        this.newDeaths = newDeaths;
+    public void setPositive(String positive) {
+        this.positive = positive;
     }
 
     public String getTotalDeaths() {
@@ -60,14 +49,6 @@ public class CovidData{
 
     public void setTotalDeaths(String totalDeaths) {
         this.totalDeaths = totalDeaths;
-    }
-
-    public String getNewRecovered() {
-        return newRecovered;
-    }
-
-    public void setNewRecovered(String newRecovered) {
-        this.newRecovered = newRecovered;
     }
 
     public String getTotalRecovered() {

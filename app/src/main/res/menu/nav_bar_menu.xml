@@ -16,6 +16,9 @@
         <item android:id="@+id/nav_bar_setting_frag"
             android:icon="@drawable/settings"
             android:title="Setting"/>
+        <item android:id="@+id/nav_bar_check_frag"
+            android:icon="@drawable/scan"
+            android:title="Scan my Location"/>
         <item android:id="@+id/nav_bar_login_frag"
             android:icon="@drawable/login"
             android:title="Login"/>

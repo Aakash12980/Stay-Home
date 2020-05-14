@@ -26,7 +26,8 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".CreateShop"></activity>
+        <activity android:name=".ScanActivity"></activity>
+        <activity android:name=".CreateShop" />
         <activity android:name=".fragments.ForgotPassword" />
         <activity android:name=".HomeMapActivity" />
         <activity android:name=".MapAct" />

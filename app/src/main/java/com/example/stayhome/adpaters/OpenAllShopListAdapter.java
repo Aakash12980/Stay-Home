@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -95,6 +94,8 @@ public class OpenAllShopListAdapter extends RecyclerView.Adapter<OpenAllShopList
                 if (shop.getContact() != null){
                     holder.contactView.setText(shop.getContact());
                 }
+            }else {
+                holder.noData.setVisibility(View.VISIBLE);
             }
     }
 
@@ -130,8 +131,7 @@ public class OpenAllShopListAdapter extends RecyclerView.Adapter<OpenAllShopList
     }
 
     public String meterToMile(double dist){
-        DecimalFormat decimalFormat = new DecimalFormat("#.#");
-
+        DecimalFormat decimalFormat = new DecimalFormat("0.0");
         return decimalFormat.format(dist * 0.621371);
     }
 }

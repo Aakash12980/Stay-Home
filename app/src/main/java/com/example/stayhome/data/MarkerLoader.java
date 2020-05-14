@@ -4,8 +4,8 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,27 +15,24 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DataLoader extends AsyncTask<Void, Void, String> {
-    private static final String TAG = "DATA LOADER";
-    private AsyncResultListener asyncResultListener;
+public class MarkerLoader extends AsyncTask<Void, Void, String> {
+    private static final String TAG = "MARKER LOADER";
+    private AsyncDataListener asyncDataListener;
 
-    public interface AsyncResultListener{
-        void getResult(CovidData covidData);
+    public interface AsyncDataListener{
+        void getResult(List<Double[] > covidData);
     }
 
-    public DataLoader(AsyncResultListener asyncResultListener) {
-        this.asyncResultListener = asyncResultListener;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
+    public MarkerLoader(AsyncDataListener asyncDataListener) {
+        this.asyncDataListener = asyncDataListener;
     }
 
     @Override
     protected String doInBackground(Void... voids) {
-        URL url = createUrl("https://nepalcorona.info/api/v1/data/nepal");
+        URL url = createUrl("https://data.nepalcorona.info/api/v1/covid");
         String jsonResponse = null;
         try {
             jsonResponse = makeHttpRequest(url);
@@ -51,22 +48,21 @@ public class DataLoader extends AsyncTask<Void, Void, String> {
             Log.d(TAG, "onPreExecute: On......NULL JSON RESPONSE");
             return ;
         }
-        CovidData covidData = new CovidData();
         try {
-            JSONObject baseJsonResponse = new JSONObject(s);
-
-            covidData.setTotalCase(baseJsonResponse.getString("tested_total"));
-            covidData.setIsolation(baseJsonResponse.getString("in_isolation"));
-            covidData.setQuarantined(baseJsonResponse.getString("quarantined"));
-            covidData.setTotalDeaths(baseJsonResponse.getString("deaths"));
-            covidData.setTotalRecovered(baseJsonResponse.getString("recovered"));
-            covidData.setPositive(baseJsonResponse.getString("tested_positive"));
+            List<Double[] > data = new ArrayList<>();
+            JSONArray baseJsonResponse = new JSONArray(s);
+            for (int i=0; i<baseJsonResponse.length(); i++){
+                if (baseJsonResponse.getJSONObject(i).getString("currentState").equals("active")){
+                    Double lat = baseJsonResponse.getJSONObject(i).getJSONObject("point").getJSONArray("coordinates").getDouble(1);
+                    Double lng = baseJsonResponse.getJSONObject(i).getJSONObject("point").getJSONArray("coordinates").getDouble(0);
+                    data.add(new Double[]{lat, lng});
+                }
+            }
+            asyncDataListener.getResult(data);
 
         } catch (JSONException e){
             Log.e("QueryUtils", "Problem parsing the earthquake JSON results", e);
         }
-        asyncResultListener.getResult(covidData);
-
     }
 
     private static String makeHttpRequest(URL url) throws IOException {
@@ -131,4 +127,6 @@ public class DataLoader extends AsyncTask<Void, Void, String> {
         }
         return url;
     }
+
+
 }

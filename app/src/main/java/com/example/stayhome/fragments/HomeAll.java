@@ -130,6 +130,10 @@ public class HomeAll extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         genreView.setText(items[itemChecked]);
                         genreString = items[itemChecked];
+                        if (shopData.size() > 0){
+                            shopData.clear();
+                            Log.d(TAG, "onClick: Size of shop data: " + shopData.size());
+                        }
                         updateUI();
                         dialog.dismiss();
                     }
@@ -147,6 +151,7 @@ public class HomeAll extends Fragment {
         Log.d(TAG, "updateUI: value of genreSTRING: "+ genreString);
         query = FirebaseFirestore.getInstance().collection("ShopData").whereEqualTo("shopGenre", genreString);;
         if (isNetworkAvailable()){
+
             ProgressBar progressBar = new ProgressBar(getContext());
             progressBar.setVisibility(View.VISIBLE);
             query.get().addOnSuccessListener(getActivity(), new OnSuccessListener<QuerySnapshot>() {
@@ -166,20 +171,25 @@ public class HomeAll extends Fragment {
                             Location loc = new Location("");
                             loc.setLongitude(Double.valueOf(shop.getLatLng().get(1)));
                             loc.setLatitude(Double.valueOf(shop.getLatLng().get(0)));
-                            distance = deviceLoc.distanceTo(loc)/1000;
-                            if (distance < 20000){
+                            distance = deviceLoc.distanceTo(loc) / 1000;
+                            if (distance < 20){
                                 String openTime = shop.getOpenTime();
                                 String closeTime = shop.getCloseTime();
                                 if (currentDate.compareTo(openTime) >= 0 && currentDate.compareTo(closeTime) <= 0){
                                     shop.setDistance(distance);
                                     shop.setActive(true);
-                                    Log.d(TAG, "onDataChange: Distance: "+ distance);
-                                    shopData.add(shop);
                                 }
+                                Log.d(TAG, "onDataChange: Distance: "+ distance);
+                                shopData.add(shop);
                             }
                         }
-                        adapter.setItems(shopData);
-                        adapter.notifyDataSetChanged();
+                        if (shopData.size() > 0){
+                            adapter.setItems(shopData);
+                            adapter.notifyDataSetChanged();
+                        }else {
+                            noData.setVisibility(View.VISIBLE);
+                            noData.setText("Couldn't find any active "+ genreString);
+                        }
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -277,7 +287,6 @@ public class HomeAll extends Fragment {
                             Log.d(TAG, "onComplete: found location");
                             Location currentLocation = (Location) task.getResult();
                             if (currentLocation != null){
-                                Log.d(TAG, "onDataChange: Distance: "+ deviceLoc.getLatitude() +" " +deviceLoc.getLongitude());
                                 deviceLoc.setLatitude(currentLocation.getLatitude());
                                 deviceLoc.setLongitude(currentLocation.getLongitude());
                             }else {
@@ -285,7 +294,6 @@ public class HomeAll extends Fragment {
                             }
 
                         }else{
-                            Log.d(TAG, "onComplete: Current location is null");
                             Log.d(TAG, "onComplete: Current location is null");
                         }
                     }

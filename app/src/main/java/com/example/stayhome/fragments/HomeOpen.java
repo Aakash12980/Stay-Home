@@ -1,6 +1,7 @@
 package com.example.stayhome.fragments;
 
 import android.Manifest;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -52,6 +53,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Queue;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -104,7 +106,7 @@ public class HomeOpen extends Fragment {
         TextView showMap = rootView.findViewById(R.id.view_in_map);
         noData = rootView.findViewById(R.id.no_data_view);
         genreView = rootView.findViewById(R.id.genre_type);
-        genreString = genreView.getText().toString();
+        genreString = genreView.getText().toString().toLowerCase();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new OpenAllShopListAdapter(getContext(), shopData);
@@ -143,7 +145,10 @@ public class HomeOpen extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         genreView.setText(items[itemChecked]);
-                        genreString = items[itemChecked];
+                        genreString = items[itemChecked].toLowerCase();
+                        if (shopData.size() > 0){
+                            shopData.clear();
+                        }
                         updateUI();
                         dialog.dismiss();
                     }
@@ -181,8 +186,7 @@ public class HomeOpen extends Fragment {
                             Location loc = new Location("");
                             loc.setLatitude(Double.valueOf(shop.getLatLng().get(0)));
                             loc.setLongitude(Double.valueOf(shop.getLatLng().get(1)));
-                            Log.d(TAG, "onDataChange: Distance: "+ deviceLoc.getLatitude() +" " +deviceLoc.getLongitude());
-                            distance = deviceLoc.distanceTo(loc) / 1000000;
+                            distance = deviceLoc.distanceTo(loc) / 1000;
                             Log.d(TAG, "onDataChange: Distance: "+ distance);
                             if (distance < 20){
                                 String openTime = shop.getOpenTime();
@@ -196,8 +200,13 @@ public class HomeOpen extends Fragment {
                                 }
                             }
                         }
-                        adapter.setItems(shopData);
-                        adapter.notifyDataSetChanged();
+                        if (shopData.size() > 0){
+                            adapter.setItems(shopData);
+                            adapter.notifyDataSetChanged();
+                        }else {
+                            noData.setVisibility(View.VISIBLE);
+                            noData.setText("Couldn't find any active "+ genreString);
+                        }
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -231,7 +240,6 @@ public class HomeOpen extends Fragment {
             menuItem.setChecked(true);
         }
     }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -267,7 +275,6 @@ public class HomeOpen extends Fragment {
                             Log.d(TAG, "onComplete: found location");
                             Location currentLocation = (Location) task.getResult();
                             if (currentLocation != null){
-                                Log.d(TAG, "onDataChange: Distance: "+ deviceLoc.getLatitude() +" " +deviceLoc.getLongitude());
                                 deviceLoc.setLatitude(currentLocation.getLatitude());
                                 deviceLoc.setLongitude(currentLocation.getLongitude());
                             }else {

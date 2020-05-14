@@ -273,16 +273,6 @@
 
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
-
-
-            <!--            <com.google.android.material.switchmaterial.SwitchMaterial-->
-            <!--                android:id="@+id/shop_switch"-->
-            <!--                android:layout_width="51dp"-->
-            <!--                android:layout_height="31dp"-->
-            <!--                android:layout_marginTop="16dp"-->
-            <!--                android:layout_marginRight="8dp"-->
-            <!--                app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                app:layout_constraintTop_toTopOf="parent" />-->
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

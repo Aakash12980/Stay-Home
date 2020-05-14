@@ -87,7 +87,6 @@ public class LoginFragment extends Fragment{
     private void signIn(){
 
         if (isNetworkAvailable()){
-            progressBar.setVisibility(View.VISIBLE);
             firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {

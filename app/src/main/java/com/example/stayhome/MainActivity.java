@@ -129,7 +129,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_bar_setting_frag:
                 getSupportFragmentManager().beginTransaction().replace(R.id.nav_fragment_container, new SettingFragment(), "setting_frag").addToBackStack("setting_frag").commit();
                 break;
+
+            case R.id.nav_bar_check_frag:
+                navigationView.getMenu().getItem(0).setChecked(true);
+                startActivity(new Intent(getApplicationContext(), ScanActivity.class));
+                break;
             case R.id.nav_bar_login_frag:
+                navigationView.getMenu().getItem(0).setChecked(true);
                 startActivity(new Intent(getApplicationContext(), LoginSignup.class));
                 break;
             case R.id.nav_bar_logout_frag:

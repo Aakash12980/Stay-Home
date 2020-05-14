@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,10 +61,10 @@ public class HomeFragment extends Fragment{
 
                     switch (menuItem.getItemId()){
                         case R.id.open_shop:
-                            getChildFragmentManager().beginTransaction().replace(R.id.shop_fragment_container, new HomeOpen()).commit();
+                            getChildFragmentManager().beginTransaction().replace(R.id.shop_fragment_container, new HomeOpen(), "home_open").commit();
                             break;
                         case R.id.view_all:
-                            getChildFragmentManager().beginTransaction().replace(R.id.shop_fragment_container, new HomeAll()).commit();
+                            getChildFragmentManager().beginTransaction().replace(R.id.shop_fragment_container, new HomeAll(), "home_all").commit();
                             break;
                     }
                     return true;
