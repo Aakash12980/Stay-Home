@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/found"
                 android:layout_toEndOf="@+id/found"
-                android:text="8"
+                android:text="0"
                 android:textSize="20sp"
                 android:id="@+id/scan_data_info"/>
             <HorizontalScrollView

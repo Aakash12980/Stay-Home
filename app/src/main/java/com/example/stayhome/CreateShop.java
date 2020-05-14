@@ -162,7 +162,6 @@ public class CreateShop extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Log.d(TAG, "onSuccess: Shop account created for this user.");
-                                progressBar.setVisibility(View.INVISIBLE);
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                 finishAffinity();
                             }
@@ -183,7 +182,7 @@ public class CreateShop extends AppCompatActivity {
         }else {
             Toast.makeText(this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
         }
-        progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
     private boolean validateInputs(){
         try {

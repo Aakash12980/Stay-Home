@@ -55,6 +55,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -70,7 +72,7 @@ public class SettingFragment extends Fragment {
     private TextView name;
     private TextView genre;
     private TextView contact;
-    ImageView image;
+    CircleImageView image;
     private TextView email;
     private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
     private static final String TAG = "SETTING FRAGMENT";
@@ -98,7 +100,6 @@ public class SettingFragment extends Fragment {
         View genreView = rootView.findViewById(R.id.setting_genre);
         View contactView = rootView.findViewById(R.id.setting_contact);
         View locView = rootView.findViewById(R.id.setting_location);
-        final View imageView = rootView.findViewById(R.id.setting_pic_change);
         View emailView = rootView.findViewById(R.id.setting_email);
         View passwordView = rootView.findViewById(R.id.setting_password);
 
@@ -148,7 +149,7 @@ public class SettingFragment extends Fragment {
                 openDialog("New Contact");
             }
         });
-        imageView.setOnClickListener(new View.OnClickListener() {
+        image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isNetworkAvailable()){
@@ -216,7 +217,7 @@ public class SettingFragment extends Fragment {
         StorageReference storageReference = firebaseStorage.getReference("ProfilePic")
                 .child(user.getUid()).child("profile.jpg");
         documentReference = FirebaseFirestore.getInstance().collection("ShopData").document(user.getUid());
-        if (isNetworkAvailable()){
+//        if (isNetworkAvailable()){
             progressBar = new ProgressBar(mContext);
             progressBar.setVisibility(View.VISIBLE);
             documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -244,9 +245,9 @@ public class SettingFragment extends Fragment {
             });
             progressBar.setVisibility(View.INVISIBLE);
 
-        }else {
-            Toast.makeText(mContext, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
-        }
+//        }else {
+//            Toast.makeText(mContext, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
+//        }
 
     }
 

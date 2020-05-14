@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .child(user.getUid()).child("profile.jpg");
             documentReference = FirebaseFirestore.getInstance().collection("ShopInfo").document(user.getUid());
 
-            if (isNetworkAvailable()){
+//            if (isNetworkAvailable()){
                 DocumentReference documentReference = FirebaseFirestore.getInstance().collection("ShopData").document(user.getUid());
                 documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
                     @Override
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
 
-            }
+//            }
 
         }
     }
@@ -259,6 +259,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getLocationPermission();
         user = FirebaseAuth.getInstance().getCurrentUser();
         Log.d(TAG, "onStart: This is on start Callback.");
+        if (!isNetworkAvailable()){
+            Toast.makeText(this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
+        }
         updateUI();
     }
 

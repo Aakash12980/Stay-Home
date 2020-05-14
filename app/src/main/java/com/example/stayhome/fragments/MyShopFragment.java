@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -32,7 +33,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -46,7 +46,6 @@ import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,14 +64,13 @@ public class MyShopFragment extends Fragment {
     private static final String TAG = "MYSHOP Fragment";
 
     private OnFragmentInteractionListener mListener;
-    private CircleImageView imgCard;
+    private ImageView imgCard;
     private EditText name;
     private EditText loc;
     private TextView phone;
     private EditText genre;
     private TextView email;
-//    private SwitchMaterial statusView;
-    private EditText openTime, closeTime;
+    private TextView openTime, closeTime;
     private int mHour, mMin;
     private String openTimeInput, closeTimeInput;
     private String previousOpenTime, previousCloseTime;
@@ -96,13 +94,16 @@ public class MyShopFragment extends Fragment {
         loc = rootView.findViewById(R.id.profile_loc);
         phone = rootView.findViewById(R.id.profile_contact);
         genre = rootView.findViewById(R.id.profile_genre);
-//        statusView = rootView.findViewById(R.id.shop_switch);
         final MaterialButton editBtn = rootView.findViewById(R.id.edit_btn);
         email = rootView.findViewById(R.id.profile_email);
         openTime = rootView.findViewById(R.id.open_time_input);
         closeTime = rootView.findViewById(R.id.close_time_input);
         saveBtn = rootView.findViewById(R.id.time_save_btn);
+        View openTimeView = rootView.findViewById(R.id.open_time_view);
+        View closeTimeView = rootView.findViewById(R.id.close_time_view);
         cancelBtn = rootView.findViewById(R.id.time_cancel_btn);
+        previousCloseTime = closeTime.getText().toString();
+        previousOpenTime = openTime.getText().toString();
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,52 +138,19 @@ public class MyShopFragment extends Fragment {
             }
         });
 
-        openTime.setOnClickListener(new View.OnClickListener() {
+        openTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showTimeDialog(openTime);
             }
         });
 
-        closeTime.setOnClickListener(new View.OnClickListener() {
+        closeTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showTimeDialog(closeTime);
             }
         });
-
-//        statusView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (isNetworkAvailable()){
-//                    final boolean active;
-//                    if (statusView.isChecked()){
-//                        active = true;
-//                    }else{
-//                        active = false;
-//                    }
-//                    Map<String , Object> statusUpdate = new HashMap<>();
-//                    statusUpdate.put("active", active);
-//                    FirebaseFirestore.getInstance().collection("ShopData").document(user.getUid())
-//                            .update(statusUpdate).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void aVoid) {
-//                            Log.d(TAG, "onSuccess: Shop status updtaed to :" + active);
-//                        }
-//                    }).addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            Log.d(TAG, "onFailure: Failed to change status.");
-//                            Toast.makeText(getContext(), "Failed to change status.", Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//                }else {
-//                    Toast.makeText(v.getContext(), "Please check your internet connection.", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-
-
         return rootView;
     }
 
@@ -212,7 +180,7 @@ public class MyShopFragment extends Fragment {
         }
     }
 
-    private void showTimeDialog(final EditText timeView){
+    private void showTimeDialog(final TextView timeView){
         final Calendar calendar = Calendar.getInstance();
         mHour = calendar.get(Calendar.HOUR_OF_DAY);
         mMin = calendar.get(Calendar.MINUTE);
@@ -242,7 +210,7 @@ public class MyShopFragment extends Fragment {
                 .child(user.getUid()).child("profile.jpg");
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("ShopData").document(user.getUid());
 
-        if (isNetworkAvailable()){
+//        if (isNetworkAvailable()){
             ProgressBar progressBar = new ProgressBar(getContext());
             progressBar.setVisibility(View.VISIBLE);
             storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -262,7 +230,6 @@ public class MyShopFragment extends Fragment {
                         name.setText(shopData.getShopName());
                         genre.setText(shopData.getShopGenre());
                         phone.setText(shopData.getContact());
-//                        statusView.setChecked(shopData.isActive());
                         loc.setText(shopData.getShopLoc());
                         openTime.setText(shopData.getOpenTime());
                         closeTime.setText(shopData.getCloseTime());
@@ -275,26 +242,10 @@ public class MyShopFragment extends Fragment {
             });
             progressBar.setVisibility(View.INVISIBLE);
 
-        }else {
-            Toast.makeText(getContext(), "Please check your internet connection.", Toast.LENGTH_SHORT).show();
-        }
+//        }else {
+//            Toast.makeText(getContext(), "Please check your internet connection.", Toast.LENGTH_SHORT).show();
+//        }
 
-    }
-    private void timeRevert(String openTime, String closeTime){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-        SimpleDateFormat saveDateFormat = new SimpleDateFormat("hh:mm a");
-        try {
-            Date date1 = simpleDateFormat.parse(openTime);
-            previousOpenTime = saveDateFormat.format(date1);
-        }catch (Exception e){
-            Log.d(TAG, "timeConversion: Failed to parse time.");
-        }
-        try {
-            Date date2 = simpleDateFormat.parse(closeTime);
-            previousCloseTime = saveDateFormat.format(date2);
-        }catch (Exception e){
-            Log.d(TAG, "timeConversion: failed to parse time.");
-        }
     }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager

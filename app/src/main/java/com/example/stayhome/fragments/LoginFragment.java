@@ -87,6 +87,10 @@ public class LoginFragment extends Fragment{
     private void signIn(){
 
         if (isNetworkAvailable()){
+            progressBar.setVisibility(View.VISIBLE);
+            if (FirebaseAuth.getInstance().getCurrentUser() != null){
+                FirebaseAuth.getInstance().signOut();
+            }
             firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -101,7 +105,7 @@ public class LoginFragment extends Fragment{
                     }
                 }
             });
-            progressBar.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.GONE);
         }else {
             Toast.makeText(getContext(), "Please check your internet connection.", Toast.LENGTH_SHORT).show();
         }
