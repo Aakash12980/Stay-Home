@@ -188,7 +188,7 @@ public class HomeAll extends Fragment {
                             adapter.notifyDataSetChanged();
                         }else {
                             noData.setVisibility(View.VISIBLE);
-                            noData.setText("Couldn't find any active "+ genreString);
+                            noData.setText("Couldn't find any "+ genreString);
                         }
                     }
                 }
@@ -290,6 +290,7 @@ public class HomeAll extends Fragment {
                                 deviceLoc.setLatitude(currentLocation.getLatitude());
                                 deviceLoc.setLongitude(currentLocation.getLongitude());
                             }else {
+                                Toast.makeText(mContext, "Please enable your location.", Toast.LENGTH_SHORT).show();
                                 getLocationPermission();
                             }
 

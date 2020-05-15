@@ -17,7 +17,7 @@
             android:id="@+id/imgCard"
             android:layout_marginTop="8dp"
             app:cardCornerRadius="14dp"
-            app:cardBackgroundColor="#ff616f"
+            app:cardBackgroundColor="@color/quantum_googgreen"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp">
             <RelativeLayout

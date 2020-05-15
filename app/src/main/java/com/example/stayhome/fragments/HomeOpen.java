@@ -278,6 +278,7 @@ public class HomeOpen extends Fragment {
                                 deviceLoc.setLatitude(currentLocation.getLatitude());
                                 deviceLoc.setLongitude(currentLocation.getLongitude());
                             }else {
+                                Toast.makeText(mContext, "Please enable your location.", Toast.LENGTH_SHORT).show();
                                 getLocationPermission();
                             }
 
