@@ -17,4 +17,7 @@ Few implemented ideas are
 - Navigation Drawer and bottom navigation
 - Google Map Fragment
 
-![Image](https://github.com/Aakash12980/Stay-Home/tree/master/Screenshots/pic1.png) ![Image](https://github.com/Aakash12980/Stay-Home/tree/master/Screenshots/pic2.png) ![Image](https://github.com/Aakash12980/Stay-Home/tree/master/Screenshots/pic3.png) ![Image](https://github.com/Aakash12980/Stay-Home/tree/master/Screenshots/pic4.png)
+![Image](https://github.com/Aakash12980/Stay-Home/tree/master/Screenshots/pic1.png) 
+![Image](https://github.com/Aakash12980/Stay-Home/tree/master/Screenshots/pic2.png)
+![Image](https://github.com/Aakash12980/Stay-Home/tree/master/Screenshots/pic3.png) 
+![Image](https://github.com/Aakash12980/Stay-Home/tree/master/Screenshots/pic4.png)
