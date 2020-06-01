@@ -7,6 +7,7 @@ Stay Home is an app where users can create their workspace like  and let other p
 
 It makes use of following tools.
 - Firebase Firestore
+- Firebase Storage
 - Firebase Auth
 - Google places API
 
