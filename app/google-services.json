@@ -1,42 +1,42 @@
 {
   "project_info": {
-    "project_number": "230947365320",
-    "firebase_url": "https://stay-home-91f68.firebaseio.com",
-    "project_id": "stay-home-91f68",
-    "storage_bucket": "stay-home-91f68.appspot.com"
+    "project_number": "504073837080",
+    "firebase_url": "https://stay-home-ddd99.firebaseio.com",
+    "project_id": "stay-home-ddd99",
+    "storage_bucket": "stay-home-ddd99.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:230947365320:android:c53a9b3f57c7bccc8360fd",
+        "mobilesdk_app_id": "1:504073837080:android:97746bde41a34525de816d",
         "android_client_info": {
-          "package_name": "com.example.stayhome"
+          "package_name": "com.meroapp.stayhome"
         }
       },
       "oauth_client": [
         {
-          "client_id": "230947365320-4r9v0etlg77oi1ngke4bet1qu6qecd3m.apps.googleusercontent.com",
+          "client_id": "504073837080-7jjnpcot3p6ajifoaot442t59rfjitfq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.stayhome",
+            "package_name": "com.meroapp.stayhome",
             "certificate_hash": "dfe906e8b22cee8832a2fdaa30c45c923872a581"
           }
         },
         {
-          "client_id": "230947365320-oq1obe9sbfrahtbnqrkqijb4ora9566n.apps.googleusercontent.com",
+          "client_id": "504073837080-domhu7q8ppm320t7ftei3gkeggqlhk46.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyABjgC7iARse4JVRxbztgZXsh0IuCAThdo"
+          "current_key": "AIzaSyD3qBrEXyjnTaqK7c4CAkz_AE2SOIXv1t8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "230947365320-oq1obe9sbfrahtbnqrkqijb4ora9566n.apps.googleusercontent.com",
+              "client_id": "504073837080-domhu7q8ppm320t7ftei3gkeggqlhk46.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
