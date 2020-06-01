@@ -18,4 +18,4 @@ Few implemented ideas are
 - Navigation Drawer and bottom navigation
 - Google Map Fragment
 
-![Image pic 1](Screenshots/pic1.png) ![Image pic 2](Screenshots/pic2.png) ![Image pic 3](Screenshots/pic3.png) ![Image pic 4](Screenshots/pic4.png) ![Image pic 5](Screenshots/pic5.png)
+![Image pic 1](Screenshots/pic1.png) ![Image pic 2](Screenshots/pic2.png) ![Image pic 3](Screenshots/pic3.png) ![Image pic 4](Screenshots/pic4.png)
